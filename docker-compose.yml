@@ -22,8 +22,36 @@ services:
         port: '52773'
     image: proxyiris:latest
     ports:
-    - "8080:80"
     - "4443:443"
     volumes:
     - ./webgateway/CSP.ini:/opt/webgateway/bin/CSP.ini
     - ./webgateway/httpd-csp.conf:/usr/local/apache2/conf/extra/httpd-csp.conf
+
+  # postgres:
+  #   image: postgres:13.2
+  #   restart: unless-stopped
+  #   environment:
+  #     POSTGRES_DB: ${POSTGRESQL_DB:-'keycloak'}
+  #     POSTGRES_USER: ${POSTGRESQL_USER:-'keycloak'}
+  #     POSTGRES_PASSWORD: ${POSTGRESQL_PASS:-'keycloak'}
+
+  # keycloak:
+  #   depends_on:
+  #     - postgres
+  #   environment:
+  #     DB_VENDOR: postgres
+  #     DB_ADDR: postgres
+  #     DB_DATABASE: ${POSTGRESQL_DB:-'keycloak'}
+  #     DB_USER: ${POSTGRESQL_USER:-'keycloak'}
+  #     DB_PASSWORD: ${POSTGRESQL_PASS:-'keycloak'}
+  #     KEYCLOAK_USER: ${KEYCLOAK_USER:-'admin'}
+  #     KEYCLOAK_PASSWORD: ${KEYCLOAK_PASS:-'admin'}
+  #     KEYCLOAK_HTTP_PORT: 8080
+  #     KEYCLOAK_HTTPS_PORT: 8443
+  #   volumes:
+  #     - ./certificates/:/etc/x509/https
+  #   image: jboss/keycloak:latest
+  #   ports:
+  #     - "8080:8080"
+  #     - "8443:8443"
+  #   restart: unless-stopped
