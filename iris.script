@@ -33,5 +33,13 @@
     set config.MaxSearchResults = 100000
     do strategy.SaveServiceConfigData(config)
 
-    do ##class(HS.FHIRServer.Tools.DataLoader).SubmitResourceFiles("/irisdev/app/data/fhir", "FHIRSERVER", "/fhir/r5")
+    //Install a Foundation namespace and change to it
+    Do ##class(HS.Util.Installer.Foundation).Install("EAI")
+    zn "EAI"
+
+    zw ##class(HS.FHIRServer.Installer).InteropAdapterConfig("/fhir")
+    
+    // load registry
+    do $system.OBJ.Load("/irisdev/app/misc/export.gof")
+
     halt
