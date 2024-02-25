@@ -43,24 +43,14 @@ class MyBusinessProcess(BusinessProcess):
     
     def check_token(self, token:str) -> bool:
 
-        decoded_jwt = None
+        # decode the token
+        decoded_token= jwt.decode(token, options={"verify_signature": False})
 
-        to_filter = True
-
-        # Check if token is a jwt
-        try:
-            decoded_jwt = jwt.decode(token, verify=False)
-        except jwt.exceptions.DecodeError:
-            self.log_error('Token is not a jwt')
-
-        # Check scopes
-        if decoded_jwt and 'user/Patient.read' in decoded_jwt['scope']:
-            self.log_info('Token has the right scope')
-            to_filter = True
+        # check if the token is valid
+        if 'VIP' in decoded_token['scope']:
+            return True
         else:
-            self.log_error('Token does not have the right scope')
-
-        return to_filter
+            return False
 
     def quick_stream_to_string(self, quick_stream_id) -> str:
         quick_stream = iris.cls('HS.SDA3.QuickStream')._OpenId(quick_stream_id)
