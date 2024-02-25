@@ -2,7 +2,7 @@ from grongier.pex import BusinessProcess
 import iris
 import jwt
 import json
-from fhir.resources import patient, bundle, resource
+from fhir.resources import patient, bundle
 
 class MyBusinessProcess(BusinessProcess):
 
@@ -74,7 +74,6 @@ class MyBusinessProcess(BusinessProcess):
         quick_stream = iris.cls('HS.SDA3.QuickStream')._New()
 
         # write the json string to the payload
-        
         n = 3000
         chunks = [json_string[i:i+n] for i in range(0, len(json_string), n)]
         for chunk in chunks:
