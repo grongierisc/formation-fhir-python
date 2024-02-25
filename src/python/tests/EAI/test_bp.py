@@ -1,7 +1,10 @@
-import pytest
 from unittest.mock import MagicMock
 
-from EAI.bp import MyBusinessProcess
+from bp import MyBusinessProcess
+
+import fixtures
+
+import json
 
 class TestMyBusinessProcess:
 
@@ -11,20 +14,32 @@ class TestMyBusinessProcess:
         assert bp.target == 'HS.FHIRServer.Interop.HTTPOperation'
 
     def test_on_fhir_request(self):
+        # initialize the business process
         bp = MyBusinessProcess()
+        bp.on_init()
+        # create a mock request
         request = MagicMock()
+        # mock all the methods that are called on the request
+        request.Request.AdditionalInfo.GetAt.return_value = "USER:OAuth Token"
+        # create the expected response
+        expected_rsp = MagicMock()
+        # mock the send_request_sync method
+        bp.send_request_sync = MagicMock(return_value=expected_rsp)
+        # call the on_fhir_request method
         rsp = bp.on_fhir_request(request)
         assert rsp is not None
 
     def test_check_token_valid(self):
         bp = MyBusinessProcess()
-        token = 'valid_token'
+        # scope is 'user/Patient.read VIP'
+        token = fixtures.VALIDE_TOKEN
         result = bp.check_token(token)
         assert result is True
 
     def test_check_token_invalid(self):
         bp = MyBusinessProcess()
-        token = 'invalid_token'
+        # scope is 'user/Patient.read'
+        token = fixtures.INVALID_TOKEN
         result = bp.check_token(token)
         assert result is False
 
@@ -42,18 +57,37 @@ class TestMyBusinessProcess:
 
     def test_filter_patient_resource(self):
         bp = MyBusinessProcess()
-        patient_str = '{"name": "John Doe", "address": "123 Main St", "birthdate": "1990-01-01"}'
+        patient_str = fixtures.FHIR_PATIENT
         result = bp.filter_patient_resource(patient_str)
         assert isinstance(result, str)
+        dict_result = json.loads(result)
+        # assert values are not present
+        assert 'name' not in dict_result
+        assert 'address' not in dict_result
+        assert 'telecom' not in dict_result
+        assert 'birthDate' not in dict_result
+        
 
     def test_filter_resources_bundle(self):
         bp = MyBusinessProcess()
-        resource_str = '{"resourceType": "Bundle", "entry": [{"resource": {"resourceType": "Patient"}}]}'
+        resource_str = fixtures.FHIR_BUNDLE
         result = bp.filter_resources(resource_str)
         assert isinstance(result, str)
+        dict_result = json.loads(result)
+        # assert values are not present
+        assert 'name' not in dict_result['entry'][0]['resource']
+        assert 'address' not in dict_result['entry'][0]['resource']
+        assert 'telecom' not in dict_result['entry'][0]['resource']
+        assert 'birthDate' not in dict_result['entry'][0]['resource']
 
     def test_filter_resources_patient(self):
         bp = MyBusinessProcess()
-        resource_str = '{"resourceType": "Patient"}'
+        resource_str = fixtures.FHIR_PATIENT
         result = bp.filter_resources(resource_str)
         assert isinstance(result, str)
+        dict_result = json.loads(result)
+        # assert values are not present
+        assert 'name' not in dict_result
+        assert 'address' not in dict_result
+        assert 'telecom' not in dict_result
+        assert 'birthDate' not in dict_result
