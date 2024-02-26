@@ -37,23 +37,23 @@ During the training, we will use the following tools:
   - [7.1. Create a new FHIR server](#71-create-a-new-fhir-server)
   - [7.2. Bind the FHIR server to the OAuth2 Authorization Server](#72-bind-the-fhir-server-to-the-oauth2-authorization-server)
   - [7.3. Test the FHIR server](#73-test-the-fhir-server)
-- [Filter FHIR Resources with InterSystems IRIS for Health](#filter-fhir-resources-with-intersystems-iris-for-health)
-  - [Interoperability Framework](#interoperability-framework)
-  - [Install the Interoperability Production](#install-the-interoperability-production)
-  - [Create the Interoperability Production](#create-the-interoperability-production)
-    - [Test the Interoperability Production](#test-the-interoperability-production)
-  - [Modify the Business Process](#modify-the-business-process)
-    - [Prepare your development environment](#prepare-your-development-environment)
-    - [Run the tests](#run-the-tests)
-    - [Implement the code](#implement-the-code)
-      - [check\_token](#check_token)
-      - [filter\_patient\_resource](#filter_patient_resource)
-      - [filter\_resources](#filter_resources)
-      - [on\_fhir\_request](#on_fhir_request)
-    - [Run the tests](#run-the-tests-1)
-- [Tips \& Tricks](#tips--tricks)
-  - [7.4. Csp log](#74-csp-log)
-  - [BP Solution](#bp-solution)
+- [8. Filter FHIR Resources with InterSystems IRIS for Health](#8-filter-fhir-resources-with-intersystems-iris-for-health)
+  - [8.1. Interoperability Framework](#81-interoperability-framework)
+  - [8.2. Install the IoP](#82-install-the-iop)
+  - [8.3. Create the Interoperability Production](#83-create-the-interoperability-production)
+    - [8.3.1. Test the Interoperability Production](#831-test-the-interoperability-production)
+  - [8.4. Modify the Business Process](#84-modify-the-business-process)
+    - [8.4.1. Prepare your development environment](#841-prepare-your-development-environment)
+    - [8.4.2. Run the tests](#842-run-the-tests)
+    - [8.4.3. Implement the code](#843-implement-the-code)
+      - [8.4.3.1. check\_token](#8431-check_token)
+      - [8.4.3.2. filter\_patient\_resource](#8432-filter_patient_resource)
+      - [8.4.3.3. filter\_resources](#8433-filter_resources)
+      - [8.4.3.4. on\_fhir\_request](#8434-on_fhir_request)
+    - [8.4.4. Run the tests](#844-run-the-tests)
+- [9. Tips \& Tricks](#9-tips--tricks)
+  - [9.1. Csp log](#91-csp-log)
+  - [9.2. BP Solution](#92-bp-solution)
 
 
 # 3. Objectives
@@ -319,7 +319,7 @@ For that let's claim a token from the OAuth2 Authorization Server.
 ```http
 POST https://localhost:4443/oauth2/token
 Content-Type: application/x-www-form-urlencoded
-Authorization: Basic 05GwihcDYkLBrB2LQI2a1jidips6o6I1X0DCIaij3rk:EyJAiDODy76vfE10RGVqza94jwfFrZ7IrdpBU7pLTdVXTSvQo5TiNZJTbGHLSxt6q1rDmeAbTdll9mtGhEniaw
+Authorization: Basic <client_id>:<client_secret>
 
 grant_type=client_credentials&scope=user/Patient.read&aud=https://localhost:4443/fhir/r5
 ```
@@ -330,13 +330,13 @@ Now you can use the `access_token` to authenticate the request to the FHIR serve
 
 ```http
 GET https://localhost:4443/fhir/r5/Patient
-Authorization: Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6MX0.eyJqdGkiOiJodHRwczovL3dlYmdhdGV3YXkvb2F1dGgyLmhzX2VjU2N5SnIyMTVKZi1iRHdHUVNBOGM2QSIsImlzcyI6Imh0dHBzOi8vd2ViZ2F0ZXdheS9vYXV0aDIiLCJzdWIiOiIwNUd3aWhjRFlrTEJyQjJMUUkyYTFqaWRpcHM2bzZJMVgwRENJYWlqM3JrIiwiZXhwIjoxNzA4OTU2MDQ3LCJhdWQiOiJodHRwczovL2xvY2FsaG9zdDo0NDQzL2ZoaXIvcjUiLCJzY29wZSI6InVzZXIvUGF0aWVudC5yZWFkIiwiaWF0IjoxNzA4OTUyNDQ3fQ.EJ0FyDyZfG3lRr9UfMfFNtD-SL54yb-YOcc2zrAMM0UkEpHTxGaxMCuZoabToxnCqBTD-tDx6BxC4ww8cA-PjI2MaAJKeosvlFaWxarvm_KRTQhJgUTRTq0ympvInl2n4aeG9ZlWnqeUpgB-p_zQCyJKLR8yIGq7z37Vys_Ycue7EdIOJkMQX3AfK6Mby96WkWsg33_ayuSdl1MMh3JG3pmu1LKzuao9PL8D-s14GoOwZVnIT70hyvwnztwof61jpOOX9WYo43X9PCN1OfxyFiHCFlI25nX90tCisfluboGiSuRQhU0hTQekmLnlDHPhZ-GL7bFAKrLdOCOh0ytp1Q
+Authorization: Bearer <access_token>
 Accept: application/fhir+json
 ```
 
 Great, you have now authenticated the request to the FHIR server. 🥳
 
-# Filter FHIR Resources with InterSystems IRIS for Health
+# 8. Filter FHIR Resources with InterSystems IRIS for Health
 
 Ok, we now start a big topic.
 
@@ -355,7 +355,7 @@ Will filter the response from the FHIR server based on scopes and send the filte
 
 Before going further, let me make a quick introduction to the Interoperability capabilities of IRIS for Health.
 
-## Interoperability Framework
+## 8.1. Interoperability Framework
 
 This is the IRIS Framework.
 
@@ -380,7 +380,7 @@ For this training, we will be using a pre-built interoperability production.
 
 And we will only focus on the `Business Process` to filter the response from the FHIR server based on scopes.
 
-## Install the Interoperability Production
+## 8.2. Install the IoP
 
 For this part, we will use the `IoP` tool. `IoP` stands for Interoperability on Python.
 
@@ -402,7 +402,7 @@ iop --init
 
 This will install `iop` on the IRIS for Health container.
 
-## Create the Interoperability Production
+## 8.3. Create the Interoperability Production
 
 Still in the container, run the following command:
 
@@ -422,14 +422,14 @@ You can now start the production.
 
 Great, you have now created the interoperability production. 🥳
 
-### Test the Interoperability Production
+### 8.3.1. Test the Interoperability Production
 
 Get a token from the OAuth2 Authorization Server.
 
 ```http
 POST https://localhost:4443/oauth2/token
 Content-Type: application/x-www-form-urlencoded
-Authorization : Basic 05GwihcDYkLBrB2LQI2a1jidips6o6I1X0DCIaij3rk:EyJAiDODy76vfE10RGVqza94jwfFrZ7IrdpBU7pLTdVXTSvQo5TiNZJTbGHLSxt6q1rDmeAbTdll9mtGhEniaw
+Authorization : Basic <client_id>:<client_secret>
 
 grant_type=client_credentials&scope=user/Patient.read&aud=https://webgateway/fhir/r5
 ```
@@ -440,7 +440,7 @@ Get a patient through the interoperability production.
 
 ```http
 GET https://localhost:4443/fhir/Patient
-Authorization : Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6MX0.eyJqdGkiOiJodHRwczovL3dlYmdhdGV3YXkvb2F1dGgyLmI3UjBEbUl1NmhBeTdkem94Zk1JUGJrdWN2QSIsImlzcyI6Imh0dHBzOi8vd2ViZ2F0ZXdheS9vYXV0aDIiLCJzdWIiOiIwNUd3aWhjRFlrTEJyQjJMUUkyYTFqaWRpcHM2bzZJMVgwRENJYWlqM3JrIiwiZXhwIjoxNzA4OTYwMDA3LCJhdWQiOiJodHRwczovL3dlYmdhdGV3YXkvZmhpci9yNSIsInNjb3BlIjoidXNlci9QYXRpZW50LnJlYWQiLCJpYXQiOjE3MDg5NTY0MDd9.MfZ2UWjQaKN0hzEs0VaCtVPSS00aNgOl0mN_1IRD0QbbJtb3lRsXk0za_vK4-FQ78AC8rPl5d_gbQ9OGMJK7mDlMIeUa_zyshu79S-0VXihvDneUTMpKglWRdkxpwW2gXEuwumuQGSKH13A6capgbLIMcoIqeLSvPna_ufPulyVgcr4SOi2vtHvojaogysW349-VsAUkEWUZPvqLskq6UY-uuLzHBu7ZE-QqPhqGA5qwlyEcgshbmgzFydb2CgReeck1WXAjesm5EcllQLphYaTfWU3zNbgtb8jDUrjfg6ZNlpAB7l1_TM3GEJ79D4jDTKOeWW-Ple5bretSA3LuTg
+Authorization : Bearer <Token>
 Accept: application/fhir+json
 ```
 
@@ -450,7 +450,7 @@ You can see the trace of the request in the interoperability production.
 http://localhost:8089/csp/healthshare/eai/EnsPortal.MessageViewer.zen?SOURCEORTARGET=Python.EAI.bp.MyBusinessProcess
 ```
 
-## Modify the Business Process
+## 8.4. Modify the Business Process
 
 All the code for the `Business Process` is in this file : `./src/python/EAI/bp.py`
 
@@ -458,7 +458,7 @@ For this training, we will be as a `TTD` (Test Driven Development) approach.
 
 All the tests for the `Business Process` are in this file : `./src/python/tests/EAI/test_bp.py`
 
-### Prepare your development environment
+### 8.4.1. Prepare your development environment
 
 To prepare your development environment, we need to create a virtual environment.
 
@@ -468,7 +468,7 @@ source .venv/bin/activate
 pip install -r requirements.txt
 ```
 
-### Run the tests
+### 8.4.2. Run the tests
 
 To run the tests, you can use the following command:
 
@@ -478,7 +478,7 @@ pytest
 
 Tests are failing.
 
-### Implement the code
+### 8.4.3. Implement the code
 
 We have 4 functions to implement:
 
@@ -489,7 +489,7 @@ We have 4 functions to implement:
 
 You can implement the code in the `./src/python/EAI/bp.py` file.
 
-#### check_token
+#### 8.4.3.1. check_token
 
 This function will check if the token is valid and if the scope contains the `VIP` scope.
 If the token is valid and the scope contains the `VIP` scope, the function will return `True`, otherwise it will return `False`.
@@ -502,7 +502,10 @@ We will use the `jwt` library to decode the token.
 def check_token(self, token:str) -> bool:
 
     # decode the token
-    decoded_token= jwt.decode(token, options={"verify_signature": False})
+    try:
+        decoded_token= jwt.decode(token, options={"verify_signature": False})
+    except jwt.exceptions.DecodeError:
+        return False
 
     # check if the token is valid
     if 'VIP' in decoded_token['scope']:
@@ -513,7 +516,7 @@ def check_token(self, token:str) -> bool:
 
 </details>
 
-#### filter_patient_resource
+#### 8.4.3.2. filter_patient_resource
 
 This function will filter the patient resource.
 
@@ -550,7 +553,7 @@ def filter_patient_resource(self, patient_str:str) -> str:
 
 </details>
 
-#### filter_resources
+#### 8.4.3.3. filter_resources
 
 This function will filter the resources.
 
@@ -594,7 +597,7 @@ def filter_resources(self, resource_str:str) -> str:
 
 </details>
 
-#### on_fhir_request
+#### 8.4.3.4. on_fhir_request
 
 This function will be the entry point of the `Business Process`.
 
@@ -651,7 +654,7 @@ def on_fhir_request(self, request:'iris.HS.FHIRServer.Interop.Request'):
 
 </details>
 
-### Run the tests
+### 8.4.4. Run the tests
 
 To run the tests, you can use the following command:
 
@@ -661,9 +664,13 @@ pytest
 
 Tests are passing. 🥳
 
-# Tips & Tricks
+You can now test the `Business Process` with the interoperability production.
 
-## 7.4. Csp log
+
+
+# 9. Tips & Tricks
+
+## 9.1. Csp log
 
 In %SYS
 
@@ -672,7 +679,7 @@ set ^%ISCLOG = 5
 zw ^ISCLOG
 ```
 
-## BP Solution
+## 9.2. BP Solution
 
 
 <details>
