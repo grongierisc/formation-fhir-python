@@ -3,7 +3,6 @@ FROM intersystemsdc/irishealth-community:preview as builder
 RUN \
 	--mount=type=bind,src=.,dst=/irisdev/app \
 	--mount=type=bind,src=./iris.script,dst=/tmp/iris.script \
-	pip3 install -r /irisdev/app/requirements.txt && \
 	iris start IRIS && \
 	iris session IRIS < /tmp/iris.script && \
 	iris stop iris quietly
