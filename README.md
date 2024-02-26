@@ -41,8 +41,19 @@ During the training, we will use the following tools:
   - [Interoperability Framework](#interoperability-framework)
   - [Install the Interoperability Production](#install-the-interoperability-production)
   - [Create the Interoperability Production](#create-the-interoperability-production)
+    - [Test the Interoperability Production](#test-the-interoperability-production)
+  - [Modify the Business Process](#modify-the-business-process)
+    - [Prepare your development environment](#prepare-your-development-environment)
+    - [Run the tests](#run-the-tests)
+    - [Implement the code](#implement-the-code)
+      - [check\_token](#check_token)
+      - [filter\_patient\_resource](#filter_patient_resource)
+      - [filter\_resources](#filter_resources)
+      - [on\_fhir\_request](#on_fhir_request)
+    - [Run the tests](#run-the-tests-1)
 - [Tips \& Tricks](#tips--tricks)
   - [7.4. Csp log](#74-csp-log)
+  - [BP Solution](#bp-solution)
 
 
 # 3. Objectives
@@ -401,6 +412,255 @@ iop --migrate /irisdev/app/src/python/EAI/settings.py
 
 This will create the interoperability production.
 
+Now you can access the interoperability production at the following URL:
+
+```url
+http://localhost:8089/csp/healthshare/eai/EnsPortal.ProductionConfig.zen?$NAMESPACE=EAI&$NAMESPACE=EAI&
+```
+
+You can now start the production.
+
+Great, you have now created the interoperability production. 🥳
+
+### Test the Interoperability Production
+
+Get a token from the OAuth2 Authorization Server.
+
+```http
+POST https://localhost:4443/oauth2/token
+Content-Type: application/x-www-form-urlencoded
+Authorization : Basic 05GwihcDYkLBrB2LQI2a1jidips6o6I1X0DCIaij3rk:EyJAiDODy76vfE10RGVqza94jwfFrZ7IrdpBU7pLTdVXTSvQo5TiNZJTbGHLSxt6q1rDmeAbTdll9mtGhEniaw
+
+grant_type=client_credentials&scope=user/Patient.read&aud=https://webgateway/fhir/r5
+```
+
+⚠️ **WARNING** ⚠️ : we change the `aud` parameter to the URL of the Web Gateway to expose the FHIR server over HTTPS.
+
+Get a patient through the interoperability production.
+
+```http
+GET https://localhost:4443/fhir/Patient
+Authorization : Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6MX0.eyJqdGkiOiJodHRwczovL3dlYmdhdGV3YXkvb2F1dGgyLmI3UjBEbUl1NmhBeTdkem94Zk1JUGJrdWN2QSIsImlzcyI6Imh0dHBzOi8vd2ViZ2F0ZXdheS9vYXV0aDIiLCJzdWIiOiIwNUd3aWhjRFlrTEJyQjJMUUkyYTFqaWRpcHM2bzZJMVgwRENJYWlqM3JrIiwiZXhwIjoxNzA4OTYwMDA3LCJhdWQiOiJodHRwczovL3dlYmdhdGV3YXkvZmhpci9yNSIsInNjb3BlIjoidXNlci9QYXRpZW50LnJlYWQiLCJpYXQiOjE3MDg5NTY0MDd9.MfZ2UWjQaKN0hzEs0VaCtVPSS00aNgOl0mN_1IRD0QbbJtb3lRsXk0za_vK4-FQ78AC8rPl5d_gbQ9OGMJK7mDlMIeUa_zyshu79S-0VXihvDneUTMpKglWRdkxpwW2gXEuwumuQGSKH13A6capgbLIMcoIqeLSvPna_ufPulyVgcr4SOi2vtHvojaogysW349-VsAUkEWUZPvqLskq6UY-uuLzHBu7ZE-QqPhqGA5qwlyEcgshbmgzFydb2CgReeck1WXAjesm5EcllQLphYaTfWU3zNbgtb8jDUrjfg6ZNlpAB7l1_TM3GEJ79D4jDTKOeWW-Ple5bretSA3LuTg
+Accept: application/fhir+json
+```
+
+You can see the trace of the request in the interoperability production.
+
+```url
+http://localhost:8089/csp/healthshare/eai/EnsPortal.MessageViewer.zen?SOURCEORTARGET=Python.EAI.bp.MyBusinessProcess
+```
+
+## Modify the Business Process
+
+All the code for the `Business Process` is in this file : `./src/python/EAI/bp.py`
+
+For this training, we will be as a `TTD` (Test Driven Development) approach.
+
+All the tests for the `Business Process` are in this file : `./src/python/tests/EAI/test_bp.py`
+
+### Prepare your development environment
+
+To prepare your development environment, we need to create a virtual environment.
+
+```bash
+python3 -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+```
+
+### Run the tests
+
+To run the tests, you can use the following command:
+
+```bash
+pytest
+```
+
+Tests are failing.
+
+### Implement the code
+
+We have 4 functions to implement:
+
+- `check_token`
+- `on_fhir_request`
+- `filter_patient_resource`
+- `filter_resources`
+
+You can implement the code in the `./src/python/EAI/bp.py` file.
+
+#### check_token
+
+This function will check if the token is valid and if the scope contains the `VIP` scope.
+If the token is valid and the scope contains the `VIP` scope, the function will return `True`, otherwise it will return `False`.
+We will use the `jwt` library to decode the token.
+
+<details>
+<summary>Click to see the code</summary>
+
+```python
+def check_token(self, token:str) -> bool:
+
+    # decode the token
+    decoded_token= jwt.decode(token, options={"verify_signature": False})
+
+    # check if the token is valid
+    if 'VIP' in decoded_token['scope']:
+        return True
+    else:
+        return False
+```
+
+</details>
+
+#### filter_patient_resource
+
+This function will filter the patient resource.
+
+It will remove the `name`, `address`, `telecom` and `birthdate` fields from the patient resource.
+
+The function will return the filtered patient resource as a string.
+
+We will use the `fhir.resources` library to parse the patient resource.
+
+Notice the signature of the function.
+
+The function takes a string as input and returns a string as output.
+
+So we need to parse the input string to a `fhir.resources.patient.Patient` object and then parse the `fhir.resources.patient.Patient` object to a string.
+
+<details>
+<summary>Click to see the code</summary>
+
+```python
+def filter_patient_resource(self, patient_str:str) -> str:
+    # filter the patient
+    p = patient.Patient(**json.loads(patient_str))
+    # remove the name
+    p.name = []
+    # remove the address
+    p.address = []
+    # remove the telecom
+    p.telecom = []
+    # remove the birthdate
+    p.birthDate = None
+
+    return p.json()
+```
+
+</details>
+
+#### filter_resources
+
+This function will filter the resources.
+
+We need to check the resource type and filter the resource based on the resource type.
+
+If the resource type is `Bundle`, we need to filter all the entries of the bundle that are of type `Patient`.
+
+If the resource type is `Patient`, we need to filter the patient resource.
+
+The function will return the filtered resource as a string.
+
+We will use the `fhir.resources` library to parse the resource.
+
+<details>
+<summary>Click to see the code</summary>
+
+```python
+def filter_resources(self, resource_str:str) -> str:
+    # parse the payload
+    payload_dict = json.loads(resource_str)
+
+    # what is the resource type?
+    resource_type = payload_dict['resourceType'] if 'resourceType' in payload_dict else 'None'
+    self.log_info('Resource type: ' + resource_type)
+
+    # is it a bundle?
+    if resource_type == 'Bundle':
+        obj = bundle.Bundle(**payload_dict)
+        # filter the bundle
+        for entry in obj.entry:
+            if entry.resource.resource_type == 'Patient':
+                self.log_info('Filtering a patient')
+                entry.resource = patient.Patient(**json.loads(self.filter_patient_resource(entry.resource.json())))
+
+    elif resource_type == 'Patient':
+        # filter the patient
+        obj = patient.Patient(**json.loads(self.filter_patient_resource(resource_str)))
+
+    return obj.json()
+```
+
+</details>
+
+#### on_fhir_request
+
+This function will be the entry point of the `Business Process`.
+
+It will receive the request from the `Business Service`, check the token, filter the response from the FHIR server based on scopes and send the filtered response to the `Business Service`.
+
+The function will return the response from the FHIR server.
+
+We will use the `iris` library to send the request to the FHIR server.
+
+The message will be a `iris.HS.FHIRServer.Interop.Request` object.
+
+This object contains the request to the FHIR server.
+
+This includes the `Method`, the `URL`, the `Headers` and the `Payload`.
+
+To check the token, we will use the `check_token` function and use the header `USER:OAuthToken` to get the token.
+
+To filter the response, we will use the `filter_resources` function and use the `QuickStream` to read the response from the FHIR server.
+
+<details>
+<summary>Click to see the code</summary>
+
+```python
+def on_fhir_request(self, request:'iris.HS.FHIRServer.Interop.Request'):
+    # Do something with the request
+    self.log_info('Received a FHIR request')
+
+    # pass it to the target
+    rsp = self.send_request_sync(self.target, request)
+
+    # Try to get the token from the request
+    token = request.Request.AdditionalInfo.GetAt("USER:OAuthToken") or ""
+
+    # Do something with the response
+    if self.check_token(token):
+        self.log_info('Filtering the response')
+        # Filter the response
+        payload_str = self.quick_stream_to_string(rsp.QuickStreamId)
+
+        # if the payload is empty, return the response
+        if payload_str == '':
+            return rsp
+
+        filtered_payload_string = self.filter_resources(payload_str)
+
+        # write the json string to a quick stream
+        quick_stream = self.string_to_quick_stream(filtered_payload_string)
+
+        # return the response
+        rsp.QuickStreamId = quick_stream._Id()
+
+    return rsp
+```
+
+</details>
+
+### Run the tests
+
+To run the tests, you can use the following command:
+
+```bash
+pytest
+```
+
+Tests are passing. 🥳
+
 # Tips & Tricks
 
 ## 7.4. Csp log
@@ -411,4 +671,124 @@ In %SYS
 set ^%ISCLOG = 5
 zw ^ISCLOG
 ```
+
+## BP Solution
+
+
+<details>
+<summary>Click to see the code</summary>
+
+```python
+from grongier.pex import BusinessProcess
+import iris
+import jwt
+import json
+from fhir.resources import patient, bundle
+
+class MyBusinessProcess(BusinessProcess):
+
+    def on_init(self):
+        if not hasattr(self, 'target'):
+            self.target = 'HS.FHIRServer.Interop.HTTPOperation'
+            return
+
+    def on_fhir_request(self, request:'iris.HS.FHIRServer.Interop.Request'):
+        # Do something with the request
+        self.log_info('Received a FHIR request')
+
+        # pass it to the target
+        rsp = self.send_request_sync(self.target, request)
+
+        # Try to get the token from the request
+        token = request.Request.AdditionalInfo.GetAt("USER:OAuthToken") or ""
+
+        # Do something with the response
+        if self.check_token(token):
+            self.log_info('Filtering the response')
+            # Filter the response
+            payload_str = self.quick_stream_to_string(rsp.QuickStreamId)
+
+            # if the payload is empty, return the response
+            if payload_str == '':
+                return rsp
+
+            filtered_payload_string = self.filter_resources(payload_str)
+
+            # write the json string to a quick stream
+            quick_stream = self.string_to_quick_stream(filtered_payload_string)
+
+            # return the response
+            rsp.QuickStreamId = quick_stream._Id()
+
+        return rsp
+    
+    def check_token(self, token:str) -> bool:
+
+        # decode the token
+        decoded_token= jwt.decode(token, options={"verify_signature": False})
+
+        # check if the token is valid
+        if 'VIP' in decoded_token['scope']:
+            return True
+        else:
+            return False
+
+    def quick_stream_to_string(self, quick_stream_id) -> str:
+        quick_stream = iris.cls('HS.SDA3.QuickStream')._OpenId(quick_stream_id)
+        json_payload = ''
+        while quick_stream.AtEnd == 0:
+            json_payload += quick_stream.Read()
+
+        return json_payload
+    
+    def string_to_quick_stream(self, json_string:str):
+        quick_stream = iris.cls('HS.SDA3.QuickStream')._New()
+
+        # write the json string to the payload
+        n = 3000
+        chunks = [json_string[i:i+n] for i in range(0, len(json_string), n)]
+        for chunk in chunks:
+            quick_stream.Write(chunk)
+
+        return quick_stream
+
+    def filter_patient_resource(self, patient_str:str) -> str:
+        # filter the patient
+        p = patient.Patient(**json.loads(patient_str))
+        # remove the name
+        p.name = []
+        # remove the address
+        p.address = []
+        # remove the telecom
+        p.telecom = []
+        # remove the birthdate
+        p.birthDate = None
+
+        return p.json()
+
+    def filter_resources(self, resource_str:str) -> str:
+        # parse the payload
+        payload_dict = json.loads(resource_str)
+
+        # what is the resource type?
+        resource_type = payload_dict['resourceType'] if 'resourceType' in payload_dict else 'None'
+        self.log_info('Resource type: ' + resource_type)
+
+        # is it a bundle?
+        if resource_type == 'Bundle':
+            obj = bundle.Bundle(**payload_dict)
+            # filter the bundle
+            for entry in obj.entry:
+                if entry.resource.resource_type == 'Patient':
+                    self.log_info('Filtering a patient')
+                    entry.resource = patient.Patient(**json.loads(self.filter_patient_resource(entry.resource.json())))
+
+        elif resource_type == 'Patient':
+            # filter the patient
+            obj = patient.Patient(**json.loads(self.filter_patient_resource(resource_str)))
+
+        return obj.json()
+```
+
+</details>
 
