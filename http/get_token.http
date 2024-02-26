@@ -1,0 +1,5 @@
+POST https://localhost:4443/oauth2/token
+Content-Type: application/x-www-form-urlencoded
+Authorization: Basic 05GwihcDYkLBrB2LQI2a1jidips6o6I1X0DCIaij3rk:EyJAiDODy76vfE10RGVqza94jwfFrZ7IrdpBU7pLTdVXTSvQo5TiNZJTbGHLSxt6q1rDmeAbTdll9mtGhEniaw
+
+grant_type=client_credentials&scope=user/Patient.read&aud=https://localhost:4443/fhir/r5
