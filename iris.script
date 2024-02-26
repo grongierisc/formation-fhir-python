@@ -6,6 +6,8 @@
     set prop("AutheEnabled")=48
     do ##class(Security.Services).Modify("%Service_CallIn",.prop)
 
+    do $system.OBJ.Load("/irisdev/app/src/cls/OAuth2/Server/V2/REST.cls")
+
     zn "HSLIB"
 
     set namespace="FHIRSERVER"
