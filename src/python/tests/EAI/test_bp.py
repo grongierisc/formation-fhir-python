@@ -25,6 +25,8 @@ class TestMyBusinessProcess:
         expected_rsp = MagicMock()
         # mock the send_request_sync method
         bp.send_request_sync = MagicMock(return_value=expected_rsp)
+        # mock the check_token method
+        bp.check_token = MagicMock(return_value=True)
         # call the on_fhir_request method
         rsp = bp.on_fhir_request(request)
         assert rsp is not None
