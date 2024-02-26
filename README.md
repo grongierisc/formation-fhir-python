@@ -666,7 +666,13 @@ Tests are passing. 🥳
 
 You can now test the `Business Process` with the interoperability production.
 
+⚒️ Work in progress ⚒️
 
+Finish interop part.
+
+Add the custom operation part.
+
+⚒️ Work in progress ⚒️
 
 # 9. Tips & Tricks
 
