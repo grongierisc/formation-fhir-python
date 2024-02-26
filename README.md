@@ -1,5 +1,7 @@
 # 1. formation-fhir-python
 
+⚒️ Work in progress ⚒️
+
 Training on FHIR and Python based on IRIS for Health.
 
 This repository contains the material for the training.
