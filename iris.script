@@ -29,7 +29,7 @@
     zw ##class(HS.FHIRServer.Installer).InteropAdapterConfig("/fhir")
     
     // load registry
-    do $system.OBJ.Load("/irisdev/app/misc/export.gof")
+    do $system.OBJ.Load("/irisdev/app/misc/usr_irissys_mgr_EAI_export.gof")
 
     zn "%SYS"
     do $system.OBJ.Load("/irisdev/app/src/cls/OAuth2/Server/V2/REST.cls")
