@@ -23,6 +23,12 @@ class MyBusinessProcess(BusinessProcess):
     def check_token(self, token:str) -> bool:
         raise NotImplementedError('You must implement the check_token method')
 
+    def filter_patient_resource(self, patient_str:str) -> str:
+        raise NotImplementedError('You must implement the filter_patient_resource method')
+
+    def filter_resources(self, resource_str:str) -> str:
+        raise NotImplementedError('You must implement the filter_resources method')
+
     def quick_stream_to_string(self, quick_stream_id) -> str:
         quick_stream = iris.cls('HS.SDA3.QuickStream')._OpenId(quick_stream_id)
         json_payload = ''
@@ -41,9 +47,3 @@ class MyBusinessProcess(BusinessProcess):
             quick_stream.Write(chunk)
 
         return quick_stream
-
-    def filter_patient_resource(self, patient_str:str) -> str:
-        raise NotImplementedError('You must implement the filter_patient_resource method')
-
-    def filter_resources(self, resource_str:str) -> str:
-        raise NotImplementedError('You must implement the filter_resources method')
