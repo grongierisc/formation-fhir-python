@@ -222,10 +222,10 @@ class CustomOperationHandler(OperationHandler):
                 secondary_resource = json.loads(fhir_request.Json._ToJSON())
                 # retun the diff of the two resources
                 # make use of deepdiff to get the difference between the two resources
-                diff = DeepDiff(primary_resource, secondary_resource, ignore_order=True).to_dict()
+                diff = DeepDiff(primary_resource, secondary_resource, ignore_order=True).to_json()
 
                 # create a new %DynamicObject to store the result
-                result = iris.cls('%DynamicObject')._FromJSON(json.dumps(diff))
+                result = iris.cls('%DynamicObject')._FromJSON(diff)
 
                 # set the result to the response
                 fhir_response.Json = result
