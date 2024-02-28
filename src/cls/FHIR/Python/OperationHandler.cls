@@ -72,8 +72,9 @@ ClassMethod ProcessOperation(
         set body = ##class(%SYS.Python).None()
         if pRequest.Json '= "" {
             set jsonLib = ##class(%SYS.Python).Import("json")
-            set body = jsonLib.loads(pRequest.Body)
+            set body = jsonLib.loads(pRequest.Json.%ToJSON())
         }
+        
         Set operationName = pRequest.OperationName
         Set operationScope = pRequest.OperationScope
         set pResponse = tPythonClass."process_operation"(operationName, operationScope, body, pService, pRequest, pResponse)
@@ -82,7 +83,15 @@ ClassMethod ProcessOperation(
     }
 
     // Do the default processing
-    do ##super(pService, pRequest, pResponse)
+    Try {
+        do ##super(pService, pRequest, pResponse)
+    }
+    Catch ex {
+         if ex.Name '= "<HSFHIRErr>OperationNotSupported" {
+            throw ex
+         }
+    }
+    
 
 	Return $$$OK
 }
