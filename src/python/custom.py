@@ -9,6 +9,8 @@ import iris
 
 import time
 
+from deepdiff import DeepDiff
+
 import os
 import json
 
@@ -183,6 +185,14 @@ class CustomOperationHandler(OperationHandler):
             Example:
             return map.put("restart","http://hl7.org/fhir/OperationDefinition/System-restart")
             """
+            # verify the map has attribute resource 
+            if not hasattr(map, 'resource'):
+                map['resource'] = []
+            # verify the map has attribute patient
+            if not hasattr(map, 'Patient'):
+                map['Patient'] = []
+            # add the operation to the map
+            map['resource']['Patient'] = {"name": "merge" , "definition": "http://hl7.org/fhir/OperationDefinition/Patient-merge"}
             return map
     
         def process_operation(
@@ -203,6 +213,21 @@ class CustomOperationHandler(OperationHandler):
             @Input fhir_response : The FHIR Response object.
             @Output : The FHIR Response object.
             """
+            if operation_name == "merge" and operation_scope == "Instance":
+                # get the primary resource
+                primary_resource = json.loads(fhir_service.interactions.Read(fhir_request.Type, fhir_request.Id)._ToJSON())
+                # get the secondary resource
+                secondary_resource = json.loads(fhir_request.Json._ToJSON())
+                # retun the diff of the two resources
+                # make use of deepdiff to get the difference between the two resources
+                diff = DeepDiff(primary_resource, secondary_resource, ignore_order=True).to_dict()
+
+                # create a new %DynamicObject to store the result
+                result = iris.cls('%DynamicObject')._FromJSON(json.dumps(diff))
+
+                # set the result to the response
+                fhir_response.Json = result
+            
             return fhir_response
 
 def set_capability_statement():
