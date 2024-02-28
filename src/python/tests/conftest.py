@@ -7,3 +7,5 @@ sys.path.append(os.path.join(os.path.dirname(__file__), ".."))
 sys.path.append(os.path.join(os.path.dirname(__file__), "../../python"))
 # Add the src/python/EAI directory to the path
 sys.path.append(os.path.join(os.path.dirname(__file__), "../../python/EAI"))
+# Add the src/python/FhirInteraction directory to the path
+sys.path.append(os.path.join(os.path.dirname(__file__), "../../python/FhirInteraction"))

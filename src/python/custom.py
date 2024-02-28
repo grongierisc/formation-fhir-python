@@ -185,14 +185,16 @@ class CustomOperationHandler(OperationHandler):
             Example:
             return map.put("restart","http://hl7.org/fhir/OperationDefinition/System-restart")
             """
+
             # verify the map has attribute resource 
-            if not hasattr(map, 'resource'):
-                map['resource'] = []
-            # verify the map has attribute patient
-            if not hasattr(map, 'Patient'):
-                map['Patient'] = []
+            if not 'resource' in map:
+                map['resource'] = {}
+            # verify the map has attribute patient in the resource
+            if not 'Patient' in map['resource']:
+                map['resource']['Patient'] = []
             # add the operation to the map
-            map['resource']['Patient'] = {"name": "merge" , "definition": "http://hl7.org/fhir/OperationDefinition/Patient-merge"}
+            map['resource']['Patient'].append({"name": "merge" , "definition": "http://hl7.org/fhir/OperationDefinition/Patient-merge"})
+
             return map
     
         def process_operation(
