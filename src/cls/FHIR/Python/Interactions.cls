@@ -5,6 +5,8 @@ Class FHIR.Python.Interactions Extends (HS.FHIRServer.Storage.Json.Interactions,
 
 // Parameter OAuth2TokenHandlerClass As %String = "FHIR.Python.OAuth2Token";
 
+Parameter OperationHandlerClass As %String = "FHIR.Python.OperationHandler";
+
 Method %OnNew(pStrategy As HS.FHIRServer.Storage.Json.InteractionsStrategy) As %Status
 {
 	// %OnNew is called when the object is created.
