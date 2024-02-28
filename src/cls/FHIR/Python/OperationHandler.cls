@@ -16,7 +16,7 @@ ClassMethod HelperGetPython() As %Status
 	if (tPythonPath = "") || (tPythonClassname = "") || (tPythonModule = "") {
 		//quit ##super(pStrategy)
 		set tPythonPath = "/irisdev/app/src/python/"
-		set tPythonClassname = "CustomOperation"
+		set tPythonClassname = "CustomOperationHandler"
 		set tPythonModule = "custom"
 	}
 
