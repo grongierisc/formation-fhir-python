@@ -1,5 +1,4 @@
 import abc
-import iris
 
 class OAuthInteraction(object):
     __metaclass__ = abc.ABCMeta

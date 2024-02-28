@@ -1,5 +1,4 @@
 import abc
-import iris
 
 class Interaction(object):
     __metaclass__ = abc.ABCMeta
