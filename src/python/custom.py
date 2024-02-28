@@ -215,7 +215,7 @@ class CustomOperationHandler(OperationHandler):
             @Input fhir_response : The FHIR Response object.
             @Output : The FHIR Response object.
             """
-            if operation_name == "merge" and operation_scope == "Instance":
+            if operation_name == "merge" and operation_scope == "Instance" and fhir_request.RequestMethod == "POST":
                 # get the primary resource
                 primary_resource = json.loads(fhir_service.interactions.Read(fhir_request.Type, fhir_request.Id)._ToJSON())
                 # get the secondary resource
