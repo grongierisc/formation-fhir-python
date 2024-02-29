@@ -186,15 +186,6 @@ class CustomOperationHandler(OperationHandler):
             return map.put("restart","http://hl7.org/fhir/OperationDefinition/System-restart")
             """
 
-            # verify the map has attribute resource 
-            if not 'resource' in map:
-                map['resource'] = {}
-            # verify the map has attribute patient in the resource
-            if not 'Patient' in map['resource']:
-                map['resource']['Patient'] = []
-            # add the operation to the map
-            map['resource']['Patient'].append({"name": "merge" , "definition": "http://hl7.org/fhir/OperationDefinition/Patient-merge"})
-
             return map
     
         def process_operation(
@@ -215,29 +206,10 @@ class CustomOperationHandler(OperationHandler):
             @Input fhir_response : The FHIR Response object.
             @Output : The FHIR Response object.
             """
-            if operation_name == "merge" and operation_scope == "Instance" and fhir_request.RequestMethod == "POST":
-                # get the primary resource
-                primary_resource = json.loads(fhir_service.interactions.Read(fhir_request.Type, fhir_request.Id)._ToJSON())
-                # get the secondary resource
-                secondary_resource = json.loads(fhir_request.Json._ToJSON())
-                # retun the diff of the two resources
-                # make use of deepdiff to get the difference between the two resources
-                diff = DeepDiff(primary_resource, secondary_resource, ignore_order=True).to_json()
-
-                # create a new %DynamicObject to store the result
-                result = iris.cls('%DynamicObject')._FromJSON(diff)
-
-                # set the result to the response
-                fhir_response.Json = result
-            
+          
             return fhir_response
 
 def set_capability_statement():
     from FhirInteraction import Utils
     utils = Utils()
     utils.update_capability_statement("/fhir/r4")
-
-if __name__ == '__main__':
-    custom_oauth_interaction = CustomOAuthInteraction()
-    custom_oauth_interaction.set_instance("eyJhbGciOiJSUzI1NiIsImtpZCI6ImEzYmRiZmRlZGUzYmFiYjI2NTFhZmNhMjY3OGRkZThjMGIzNWRmNzYiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJhY2NvdW50cy5nb29nbGUuY29tIiwiYXpwIjoiNTc3NjgzODIwMjU5LW5xN2FmbTZicGJuNWhjZnVlMWQ4aTFsMWdtbzFrcG0xLmFwcHMuZ29vZ2xldXNlcmNvbnRlbnQuY29tIiwiYXVkIjoiNTc3NjgzODIwMjU5LW5xN2FmbTZicGJuNWhjZnVlMWQ4aTFsMWdtbzFrcG0xLmFwcHMuZ29vZ2xldXNlcmNvbnRlbnQuY29tIiwic3ViIjoiMTAxOTE3MDk4MTQzOTgyOTg1NzI3IiwiYXRfaGFzaCI6IlJMXzNfV2FicFFoaGNXcnZodnVhUUEiLCJpYXQiOjE2OTAzNzIwOTYsImV4cCI6MTY5MDM3NTY5Nn0.OlV24r-44CV3v5Z_FcOr3Xh1-IOMgWTSnINceTiKpk0CrQIQDZZMPpVnfggyy5DVLH2UPtubE-LtF_4ZQ1vntcAMmIDHnDpTejI6Q3j805LrjAaRKI3aF6-j2R2mxzqO9ScHg7PNp0WrHyu3L2QM7xmOvTmutMewN8QbmtDsNaI76LZufD30HlYgn9dUCg0RV_o173_YPLK_g-uqSKqOKO8u7Ccz09atUeL1WAbdaAq3qpYD8sbBnPVxn3mu8VZXmoCNiVtZC19J2p13-aY7iC4RPiPDT-4ALRjSkUDUDxY4MufnBg2-pP8tB1tkRMpdCispUD3Rh-xIJqzAd9xIKw","oauth_client","base_url","username")
-    print('end')

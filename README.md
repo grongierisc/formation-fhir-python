@@ -53,6 +53,10 @@ During the training, we will use the following tools:
       - [8.4.3.3. filter\_resources](#8433-filter_resources)
       - [8.4.3.4. on\_fhir\_request](#8434-on_fhir_request)
     - [8.4.4. Run the tests](#844-run-the-tests)
+- [Create the custom operation](#create-the-custom-operation)
+  - [Coding the custom operation](#coding-the-custom-operation)
+    - [add\_supported\_operations](#add_supported_operations)
+    - [process\_operation](#process_operation)
 - [9. Tips \& Tricks](#9-tips--tricks)
   - [9.1. Csp log](#91-csp-log)
   - [9.2. BP Solution](#92-bp-solution)
@@ -278,8 +282,8 @@ In the Server Configuration form, we need to fulfill the following parameters:
 - **URL**: The URL of the FHIR server
   - /fhir/r5
 - **Interactions strategy**: The interactions strategy to use for the FHIR server
-  - HS.FHIRServer.Storage./son.InteractionsStrategy
-  - *NOTE* : This is the default interactions strategy for the FHIR server.
+  - FHIR.Python.InteractionsStrategy
+  - ⚠️ **WARNING** ⚠️  : Not like in the picutre, we need to select the `FHIR.Python.InteractionsStrategy` interactions strategy.
 
 Click on the `Add` button.
 
@@ -668,13 +672,249 @@ Tests are passing. 🥳
 
 You can now test the `Business Process` with the interoperability production.
 
-⚒️ Work in progress ⚒️
+# Create the custom operation
 
-Finish interop part.
+Last part of the training. 🏁
 
-Add the custom operation part.
+We will create a custom operation on the FHIR server.
 
-⚒️ Work in progress ⚒️
+The custom operation will be a `Patient` merge operation, the result will be the diff of the 2 patients.
+
+example:
+
+```http
+POST https://localhost:4443/fhir/r5/Patient/1/$merge
+Authorization : Bearer <Token>
+Accept: application/fhir+json
+Content-Type: application/fhir+json
+
+{
+  "resourceType": "Patient",
+  "id": "2",
+  "meta": {
+    "versionId": "2"
+  }
+}
+```
+
+The response will be the diff of the 2 patients.
+
+```json
+{
+    "values_changed": {
+        "root['address'][0]['city']": {
+            "new_value": "fdsfd",
+            "old_value": "Lynnfield"
+        },
+        "root['meta']['lastUpdated']": {
+            "new_value": "2024-02-24T09:11:00Z",
+            "old_value": "2024-02-28T13:50:27Z"
+        },
+        "root['meta']['versionId']": {
+            "new_value": "1",
+            "old_value": "2"
+        }
+    }
+}
+```
+
+Before going further, let me make a quick introduction to the custom operation on the FHIR server.
+
+There is 3 types of custom operation:
+
+- **Instance Operation**: The operation is performed on a specific instance of a resource.
+- **Type Operation**: The operation is performed on a type of resource.
+- **System Operation**: The operation is performed on the FHIR server.
+
+For this training, we will use the `Instance Operation` to create the custom operation.
+
+## Coding the custom operation
+
+A custom operation must inherit from the `OperationHandler` class from the `FhirInteraction` module.
+
+Here is the signature of the `OperationHandler` class:
+
+```python
+class OperationHandler(object):
+
+    @abc.abstractmethod
+    def add_supported_operations(self,map:dict) -> dict:
+        """
+        @API Enumerate the name and url of each Operation supported by this class
+        @Output map : A map of operation names to their corresponding URL.
+        Example:
+        return map.put("restart","http://hl7.org/fhir/OperationDefinition/System-restart")
+        """
+
+    @abc.abstractmethod
+    def process_operation(
+        self,
+        operation_name:str,
+        operation_scope:str,
+        body:dict,
+        fhir_service:'iris.HS.FHIRServer.API.Service',
+        fhir_request:'iris.HS.FHIRServer.API.Data.Request',
+        fhir_response:'iris.HS.FHIRServer.API.Data.Response'
+    ) -> 'iris.HS.FHIRServer.API.Data.Response':
+        """
+        @API Process an Operation request.
+        @Input operation_name : The name of the Operation to process.
+        @Input operation_scope : The scope of the Operation to process.
+        @Input fhir_service : The FHIR Service object.
+        @Input fhir_request : The FHIR Request object.
+        @Input fhir_response : The FHIR Response object.
+        @Output : The FHIR Response object.
+        """
+```
+
+As we did in the previous part, we will use a `TTD` (Test Driven Development) approach.
+
+All the tests for the custom operation are in this file : `./src/python/tests/FhirInteraction/test_custom.py`
+
+### add_supported_operations
+
+This function will add the `Patient` merge operation to the supported operations.
+
+The function will return a dictionary with the name of the operation and the URL of the operation.
+
+Be aware that the input dict can be empty.
+
+The expected output is:
+
+```json
+{
+  "resource": 
+    {
+      "Patient": 
+        [
+          {
+            "name": "merge",
+            "definition": "http://hl7.org/fhir/OperationDefinition/Patient-merge"
+          }
+        ]
+    }
+}
+```
+
+This json document will be added to the `CapabilityStatement` of the FHIR server.
+
+<details>
+<summary>Click to see the code</summary>
+
+```python
+def add_supported_operations(self,map:dict) -> dict:
+    """
+    @API Enumerate the name and url of each Operation supported by this class
+    @Output map : A map of operation names to their corresponding URL.
+    Example:
+    return map.put("restart","http://hl7.org/fhir/OperationDefinition/System-restart")
+    """
+
+    # verify the map has attribute resource 
+    if not 'resource' in map:
+        map['resource'] = {}
+    # verify the map has attribute patient in the resource
+    if not 'Patient' in map['resource']:
+        map['resource']['Patient'] = []
+    # add the operation to the map
+    map['resource']['Patient'].append({"name": "merge" , "definition": "http://hl7.org/fhir/OperationDefinition/Patient-merge"})
+
+    return map
+```
+
+</details>
+
+### process_operation
+
+This function will process the `Patient` merge operation.
+
+The function will return the diff of the 2 patients.
+
+We will make use of `deepdiff` library to get the diff of the 2 patients.
+
+The input parameters are:
+
+- `operation_name`: The name of the operation to process.
+- `operation_scope`: The scope of the operation to process.
+- `body`: The body of the operation.
+- `fhir_service`: The FHIR Service object.
+  - fhir_service.interactions.Read
+    - Is a method to read a resource from the FHIR server.
+    - Input parameters are:
+      - `resource_type`: The type of the resource to read.
+      - `resource_id`: The id of the resource to read.
+    - Output is a `%DynamicObject` object.
+- `fhir_request`: The FHIR Request object.
+  - fhir_request.Json
+    - Property to get the body of the request, it's a `%DynamicObject` object.
+- `fhir_response`: The FHIR Response object.
+  - fhir_response.Json
+    - Property to set the body of the response, it's a `%DynamicObject` object.
+
+`%DynamicObject` is a class to manipulate JSON objects.
+
+It's the same as a Python dictionary but for ObjectScript.
+
+Load a JSON object:
+
+```python
+json_str = fhir_request.Json._ToJSON()
+json_obj = json.loads(json_str)
+```
+
+Set a JSON object:
+
+```python
+json_str = json.dumps(json_obj)
+fhir_response.Json._FromJSON(json_str)
+```
+
+Make sure went `process_operation` is called to check if the `operation_name` is `merge`, the `operation_scope` is `Instance` and the `RequestMethod` is `POST`.
+
+<details>
+<summary>Click to see the code</summary>
+
+```python
+def process_operation(
+    self,
+    operation_name:str,
+    operation_scope:str,
+    body:dict,
+    fhir_service:'iris.HS.FHIRServer.API.Service',
+    fhir_request:'iris.HS.FHIRServer.API.Data.Request',
+    fhir_response:'iris.HS.FHIRServer.API.Data.Response'
+) -> 'iris.HS.FHIRServer.API.Data.Response':
+    """
+    @API Process an Operation request.
+    @Input operation_name : The name of the Operation to process.
+    @Input operation_scope : The scope of the Operation to process.
+    @Input fhir_service : The FHIR Service object.
+    @Input fhir_request : The FHIR Request object.
+    @Input fhir_response : The FHIR Response object.
+    @Output : The FHIR Response object.
+    """
+    if operation_name == "merge" and operation_scope == "Instance" and fhir_request.RequestMethod == "POST":
+        # get the primary resource
+        primary_resource = json.loads(fhir_service.interactions.Read(fhir_request.Type, fhir_request.Id)._ToJSON())
+        # get the secondary resource
+        secondary_resource = json.loads(fhir_request.Json._ToJSON())
+        # retun the diff of the two resources
+        # make use of deepdiff to get the difference between the two resources
+        diff = DeepDiff(primary_resource, secondary_resource, ignore_order=True).to_json()
+
+        # create a new %DynamicObject to store the result
+        result = iris.cls('%DynamicObject')._FromJSON(diff)
+
+        # set the result to the response
+        fhir_response.Json = result
+    
+    return fhir_response
+```
+
+
+
+
+
 
 # 9. Tips & Tricks
 
