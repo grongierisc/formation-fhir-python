@@ -2,7 +2,7 @@ from unittest.mock import MagicMock
 
 from bp import MyBusinessProcess
 
-import fixtures
+import fixtures as fixtures
 
 import json
 

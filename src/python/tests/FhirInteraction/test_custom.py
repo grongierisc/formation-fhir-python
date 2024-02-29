@@ -3,7 +3,7 @@ from unittest.mock import MagicMock
 import json
 import unittest
 from custom import CustomOperationHandler
-from EAI import fixtures
+import fixtures
 import iris
 
 class TestCustomOperationHandler(unittest.TestCase):
@@ -26,6 +26,7 @@ class TestCustomOperationHandler(unittest.TestCase):
 
         fhir_service = MagicMock()
         fhir_request = MagicMock()
+        fhir_request.RequestMethod = 'POST'
         fhir_response = MagicMock()
         
         # Set up primary_resource and secondary_resource for testing
