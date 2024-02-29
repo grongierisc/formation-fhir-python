@@ -51,13 +51,13 @@ During the training, we will use the following tools:
       - [8.4.3.3. filter\_resources](#8433-filter_resources)
       - [8.4.3.4. on\_fhir\_request](#8434-on_fhir_request)
     - [8.4.4. Run the tests](#844-run-the-tests)
-- [Create the custom operation](#create-the-custom-operation)
-  - [Coding the custom operation](#coding-the-custom-operation)
-    - [add\_supported\_operations](#add_supported_operations)
-    - [process\_operation](#process_operation)
-- [9. Tips \& Tricks](#9-tips--tricks)
-  - [9.1. Csp log](#91-csp-log)
-  - [9.2. BP Solution](#92-bp-solution)
+- [9. Create the custom operation](#9-create-the-custom-operation)
+  - [9.1. Coding the custom operation](#91-coding-the-custom-operation)
+    - [9.1.1. add\_supported\_operations](#911-add_supported_operations)
+    - [9.1.2. process\_operation](#912-process_operation)
+- [10. Tips \& Tricks](#10-tips--tricks)
+  - [10.1. Csp log](#101-csp-log)
+  - [10.2. BP Solution](#102-bp-solution)
 
 
 # 3. Objectives
@@ -670,7 +670,7 @@ Tests are passing. 🥳
 
 You can now test the `Business Process` with the interoperability production.
 
-# Create the custom operation
+# 9. Create the custom operation
 
 Last part of the training. 🏁
 
@@ -726,7 +726,7 @@ There is 3 types of custom operation:
 
 For this training, we will use the `Instance Operation` to create the custom operation.
 
-## Coding the custom operation
+## 9.1. Coding the custom operation
 
 A custom operation must inherit from the `OperationHandler` class from the `FhirInteraction` module.
 
@@ -769,7 +769,7 @@ As we did in the previous part, we will use a `TTD` (Test Driven Development) ap
 
 All the tests for the custom operation are in this file : `./src/python/tests/FhirInteraction/test_custom.py`
 
-### add_supported_operations
+### 9.1.1. add_supported_operations
 
 This function will add the `Patient` merge operation to the supported operations.
 
@@ -822,7 +822,7 @@ def add_supported_operations(self,map:dict) -> dict:
 
 </details>
 
-### process_operation
+### 9.1.2. process_operation
 
 This function will process the `Patient` merge operation.
 
@@ -909,9 +909,11 @@ def process_operation(
     return fhir_response
 ```
 
-# 9. Tips & Tricks
+</details>
 
-## 9.1. Csp log
+# 10. Tips & Tricks
+
+## 10.1. Csp log
 
 In %SYS
 
@@ -920,7 +922,7 @@ set ^%ISCLOG = 5
 zw ^ISCLOG
 ```
 
-## 9.2. BP Solution
+## 10.2. BP Solution
 
 
 <details>
