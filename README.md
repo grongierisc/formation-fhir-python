@@ -1,66 +1,68 @@
-# 1. formation-fhir-python
-
 Training on FHIR and Python based on IRIS for Health.
 
 This repository contains the material for the training.
 
-During the training, we will use the following tools:
+The objective of the training is to provide the participants with the following skills:
 
-- [IRIS for Health](https://www.intersystems.com/products/iris-for-health/)
-- [Python](https://www.python.org/)
-- [VSCode](https://code.visualstudio.com/)
-- [Postman](https://www.postman.com/)
-- [Git](https://git-scm.com/)
-- [Docker](https://www.docker.com/)
-- [Docker Compose](https://docs.docker.com/compose/)
-- [IoP](https://github.com/grongierisc/interoperability-embedded-python)
+- Configure and use the FHIR server
+- Create an OAuth2 Authorization Server
+- Bind the FHIR server to the OAuth2 Authorization Server for support of SMART on FHIR
+- Use the interoperability capabilities of IRIS for Health to filter FHIR resources
+- Create a custom operation on the FHIR server
 
-# 2. Table of Contents
+Schema of the training:
 
-- [1. formation-fhir-python](#1-formation-fhir-python)
-- [2. Table of Contents](#2-table-of-contents)
-- [3. Objectives](#3-objectives)
-- [4. Installation](#4-installation)
-  - [4.1. Access to the FHIR server](#41-access-to-the-fhir-server)
-  - [4.2. Access the InterSystems IRIS Management Portal](#42-access-the-intersystems-iris-management-portal)
-- [5. Configuration of the OAuth2 Authorization Server](#5-configuration-of-the-oauth2-authorization-server)
-  - [5.1. General Tab](#51-general-tab)
-  - [5.2. Scope Tab](#52-scope-tab)
-  - [5.3. JWT Tab](#53-jwt-tab)
-  - [5.4. Customization Tab](#54-customization-tab)
-- [6. Configuration of the Client](#6-configuration-of-the-client)
-  - [6.1. Register the OAuth2 Authorization Server](#61-register-the-oauth2-authorization-server)
-  - [6.2. Server Description](#62-server-description)
-  - [6.3. Create a new client](#63-create-a-new-client)
-    - [6.3.1. General Tab](#631-general-tab)
-- [7. Configuration of the FHIR server](#7-configuration-of-the-fhir-server)
-  - [7.1. Create a new FHIR server](#71-create-a-new-fhir-server)
-  - [7.2. Bind the FHIR server to the OAuth2 Authorization Server](#72-bind-the-fhir-server-to-the-oauth2-authorization-server)
-  - [7.3. Test the FHIR server](#73-test-the-fhir-server)
-- [8. Filter FHIR Resources with InterSystems IRIS for Health](#8-filter-fhir-resources-with-intersystems-iris-for-health)
-  - [8.1. Interoperability Framework](#81-interoperability-framework)
-  - [8.2. Install the IoP](#82-install-the-iop)
-  - [8.3. Create the Interoperability Production](#83-create-the-interoperability-production)
-    - [8.3.1. Test the Interoperability Production](#831-test-the-interoperability-production)
-  - [8.4. Modify the Business Process](#84-modify-the-business-process)
-    - [8.4.1. Prepare your development environment](#841-prepare-your-development-environment)
-    - [8.4.2. Run the tests](#842-run-the-tests)
-    - [8.4.3. Implement the code](#843-implement-the-code)
-      - [8.4.3.1. check\_token](#8431-check_token)
-      - [8.4.3.2. filter\_patient\_resource](#8432-filter_patient_resource)
-      - [8.4.3.3. filter\_resources](#8433-filter_resources)
-      - [8.4.3.4. on\_fhir\_request](#8434-on_fhir_request)
-    - [8.4.4. Run the tests](#844-run-the-tests)
-- [9. Create the custom operation](#9-create-the-custom-operation)
-  - [9.1. Coding the custom operation](#91-coding-the-custom-operation)
-    - [9.1.1. add\_supported\_operations](#911-add_supported_operations)
-    - [9.1.2. process\_operation](#912-process_operation)
-- [10. Tips \& Tricks](#10-tips--tricks)
-  - [10.1. Csp log](#101-csp-log)
-  - [10.2. BP Solution](#102-bp-solution)
+![Schema](https://github.com/grongierisc/formation-fhir-python/blob/main/misc/img/Schema.png?raw=true)
+
+Workflow of the training:
+
+![Workflow](https://github.com/grongierisc/formation-fhir-python/blob/main/misc/img/Workflow.png?raw=true)
+
+# 1. Table of Contents
+
+- [1. Table of Contents](#1-table-of-contents)
+- [2. Objectives](#2-objectives)
+- [3. Installation](#3-installation)
+  - [3.1. Access to the FHIR server](#31-access-to-the-fhir-server)
+  - [3.2. Access the InterSystems IRIS Management Portal](#32-access-the-intersystems-iris-management-portal)
+- [4. Configuration of the OAuth2 Authorization Server](#4-configuration-of-the-oauth2-authorization-server)
+  - [4.1. General Tab](#41-general-tab)
+  - [4.2. Scope Tab](#42-scope-tab)
+  - [4.3. JWT Tab](#43-jwt-tab)
+  - [4.4. Customization Tab](#44-customization-tab)
+- [5. Configuration of the Client](#5-configuration-of-the-client)
+  - [5.1. Register the OAuth2 Authorization Server](#51-register-the-oauth2-authorization-server)
+  - [5.2. Server Description](#52-server-description)
+  - [5.3. Create a new client](#53-create-a-new-client)
+    - [5.3.1. General Tab](#531-general-tab)
+- [6. Configuration of the FHIR server](#6-configuration-of-the-fhir-server)
+  - [6.1. Create a new FHIR server](#61-create-a-new-fhir-server)
+  - [6.2. Bind the FHIR server to the OAuth2 Authorization Server](#62-bind-the-fhir-server-to-the-oauth2-authorization-server)
+  - [6.3. Test the FHIR server](#63-test-the-fhir-server)
+- [7. Filter FHIR Resources with InterSystems IRIS for Health](#7-filter-fhir-resources-with-intersystems-iris-for-health)
+  - [7.1. Interoperability Framework](#71-interoperability-framework)
+  - [7.2. Install the IoP](#72-install-the-iop)
+  - [7.3. Create the Interoperability Production](#73-create-the-interoperability-production)
+    - [7.3.1. Test the Interoperability Production](#731-test-the-interoperability-production)
+  - [7.4. Modify the Business Process](#74-modify-the-business-process)
+    - [7.4.1. Prepare your development environment](#741-prepare-your-development-environment)
+    - [7.4.2. Run the tests](#742-run-the-tests)
+    - [7.4.3. Implement the code](#743-implement-the-code)
+      - [7.4.3.1. check\_token](#7431-check_token)
+      - [7.4.3.2. filter\_patient\_resource](#7432-filter_patient_resource)
+      - [7.4.3.3. filter\_resources](#7433-filter_resources)
+      - [7.4.3.4. on\_fhir\_request](#7434-on_fhir_request)
+    - [7.4.4. Run the tests](#744-run-the-tests)
+- [8. Create the custom operation](#8-create-the-custom-operation)
+  - [8.1. Coding the custom operation](#81-coding-the-custom-operation)
+    - [8.1.1. add\_supported\_operations](#811-add_supported_operations)
+    - [8.1.2. process\_operation](#812-process_operation)
+- [9. Tips \& Tricks](#9-tips--tricks)
+  - [9.1. Csp log](#91-csp-log)
+  - [9.2. BP Solution](#92-bp-solution)
 
 
-# 3. Objectives
+# 2. Objectives
 
 This training aims to provide the participants with the following skills:
 
@@ -70,7 +72,7 @@ This training aims to provide the participants with the following skills:
 - Use the interoperability capabilities of IRIS for Health to filter FHIR resources
 - Create a custom operation on the FHIR server
 
-# 4. Installation
+# 3. Installation
 
 To install the training environment, you need to have Docker and Docker Compose installed on your machine.
 
@@ -84,7 +86,7 @@ docker-compose up -d
 
 This command will start the IRIS for Health container and the Web Gateway container to expose the FHIR server over HTTPS.
 
-## 4.1. Access to the FHIR server
+## 3.1. Access to the FHIR server
 
 Once the containers are started, you can access the FHIR server at the following URL:
 
@@ -92,7 +94,7 @@ Once the containers are started, you can access the FHIR server at the following
 https://localhost:4443/fhir/r5/
 ```
 
-## 4.2. Access the InterSystems IRIS Management Portal
+## 3.2. Access the InterSystems IRIS Management Portal
 
 You can access the InterSystems IRIS Management Portal at the following URL:
 
@@ -102,19 +104,19 @@ http://localhost:8089/csp/sys/UtilHome.csp
 
 The default username and password are `SuperUser` and `SYS`.
 
-# 5. Configuration of the OAuth2 Authorization Server
+# 4. Configuration of the OAuth2 Authorization Server
 
 To configure the OAuth2 Authorization Server, you need to connect to the InterSystems IRIS Management Portal and navigate to the System Administration > Security > OAuth 2.0 > Servers.
 
-![OAuth2 Servers](./misc/img/Oauth2_Server_Menu.png)
+![OAuth2 Servers](https://github.com/grongierisc/formation-fhir-python/blob/main/misc/img/Oauth2_Server_Menu.png?raw=true)
 
 Next, we will fulfill the form to create a new OAuth2 Authorization Server.
 
-## 5.1. General Tab
+## 4.1. General Tab
 
 First we start with the General tab.
 
-![General Tab](./misc/img/Oauth2_Server_General.png)
+![General Tab](https://github.com/grongierisc/formation-fhir-python/blob/main/misc/img/Oauth2_Server_General.png?raw=true)
 
 The parameters are as follows:
 
@@ -131,11 +133,11 @@ The parameters are as follows:
 - **SSL/TLS Configuration**: The SSL/TLS configuration to use for the OAuth2 Authorization Server
   - Default : BFC_SSL
 
-## 5.2. Scope Tab
+## 4.2. Scope Tab
 
 Next we move to the Scope tab.
 
-![Scope Tab](./misc/img/Oauth2_Server_Scope.png)
+![Scope Tab](https://github.com/grongierisc/formation-fhir-python/blob/main/misc/img/Oauth2_Server_Scope.png?raw=true)
 
 We will create 3 scopes:
 
@@ -143,11 +145,11 @@ We will create 3 scopes:
 - **VIP**: The scope to read VIP patient resources
 - **user/*.***: The scope to read all resources, for administrative purposes
 
-## 5.3. JWT Tab
+## 4.3. JWT Tab
 
 Next we move to the JWT tab.
 
-![JWT Tab](./misc/img/Oauth2_Server_JWT.png)
+![JWT Tab](https://github.com/grongierisc/formation-fhir-python/blob/main/misc/img/Oauth2_Server_JWT.png?raw=true)
 
 Here we simply select the algorithm to use for the JWT.
 
@@ -155,11 +157,11 @@ We will use the RS256 algorithm.
 
 If needed, we can select encryption for the JWT. We will not use encryption for this training.
 
-## 5.4. Customization Tab
+## 4.4. Customization Tab
 
 Next we move to the Customization tab.
 
-![Customization Tab](./misc/img/Oauth2_Server_Customization.png)
+![Customization Tab](https://github.com/grongierisc/formation-fhir-python/blob/main/misc/img/Oauth2_Server_Customization.png?raw=true)
 
 Here is all the customization classes for the OAuth2 Authorization Server.
 
@@ -173,25 +175,25 @@ We can now save the OAuth2 Authorization Server.
 
 Great, we have now configured the OAuth2 Authorization Server. 🥳
 
-# 6. Configuration of the Client
+# 5. Configuration of the Client
 
 To configure the client, you need to connect to the InterSystems IRIS Management Portal and navigate to the System Administration > Security > OAuth 2.0 > Client.
 
-![OAuth2 Clients](./misc/img/Oauth2_Client_Menu.png)
+![OAuth2 Clients](https://github.com/grongierisc/formation-fhir-python/blob/main/misc/img/Oauth2_Client_Menu.png?raw=true)
 
 To create a new client, we need first to register the OAuth2 Authorization Server.
 
-## 6.1. Register the OAuth2 Authorization Server
+## 5.1. Register the OAuth2 Authorization Server
 
 On the client page, click on the `Create Server Description` button.
 
-![Create Server Description](./misc/img/Oauth2_Client_Create_Server_Description.png)
+![Create Server Description](https://github.com/grongierisc/formation-fhir-python/blob/main/misc/img/Oauth2_Client_Create_Server_Description.png?raw=true)
 
-## 6.2. Server Description
+## 5.2. Server Description
 
 In the Server Description form, we need to fulfill the following parameters:
 
-![Server Description](./misc/img/Oauth2_Client_Server_Form_Description.png)
+![Server Description](https://github.com/grongierisc/formation-fhir-python/blob/main/misc/img/Oauth2_Client_Server_Form_Description.png?raw=true)
 
 - **Server URL**: The URL of the OAuth2 Authorization Server
   - https://webgateway/oauth2
@@ -202,27 +204,27 @@ Click on the `Discover and Save` button.
 
 Neat, we have now registered the OAuth2 Authorization Server.
 
-![Server Description](./misc/img/Oauth2_Client_Server_Form_Description_Discovered.png)
+![Server Description](https://github.com/grongierisc/formation-fhir-python/blob/main/misc/img/Oauth2_Client_Server_Form_Description_Discovered.png?raw=true)
 
-## 6.3. Create a new client
+## 5.3. Create a new client
 
 Next, we can create a new client.
 
 On the client page, we have a new button `Client Configuration`.
 
-![Client Configuration](./misc/img/Oauth2_Client_Create_Client.png)
+![Client Configuration](https://github.com/grongierisc/formation-fhir-python/blob/main/misc/img/Oauth2_Client_Create_Client.png?raw=true)
 
 Click on the `Client Configuration` button link to the Server Description.
 
 We can now Create a new client.
 
-![Create Client](./misc/img/Oauth2_Client_Create_Client_Form.png)
+![Create Client](https://github.com/grongierisc/formation-fhir-python/blob/main/misc/img/Oauth2_Client_Create_Client_Form.png?raw=true)
 
-### 6.3.1. General Tab
+### 5.3.1. General Tab
 
 First we start with the General tab.
 
-![General Tab](./misc/img/Oauth2_Client_Create_Client_Form_General.png)
+![General Tab](https://github.com/grongierisc/formation-fhir-python/blob/main/misc/img/Oauth2_Client_Create_Client_Form_General.png?raw=true)
 
 The parameters are as follows:
 
@@ -253,27 +255,27 @@ If we go to the `Client Credentials` tab, we can see the client credentials.
 
 Notice that the client credentials are the `Client ID` and the `Client Secret`.
 
-# 7. Configuration of the FHIR server
+# 6. Configuration of the FHIR server
 
 ⚠️ **WARNING** ⚠️ : Make sure to be on the `FHIRSERVER` namespace.
 
-![Namespace](./misc/img/FHIR_Server_Namespace.png)
+![Namespace](https://github.com/grongierisc/formation-fhir-python/blob/main/misc/img/FHIR_Server_Namespace.png?raw=true)
 
 To configure the FHIR server, you need to connect to the InterSystems IRIS Management Portal and navigate to the Health > FHIR Configuration > Servers.
 
-![FHIR Servers](./misc/img/FHIR_Server_Menu.png)
+![FHIR Servers](https://github.com/grongierisc/formation-fhir-python/blob/main/misc/img/FHIR_Server_Menu.png?raw=true)
 
 Next, we will create a new FHIR server.
 
 Click on the `Server Configuration` button.
 
-![Server Configuration](./misc/img/FHIR_Server_Create_Server.png)
+![Server Configuration](https://github.com/grongierisc/formation-fhir-python/blob/main/misc/img/FHIR_Server_Create_Server.png?raw=true)
 
-## 7.1. Create a new FHIR server
+## 6.1. Create a new FHIR server
 
 In the Server Configuration form, we need to fulfill the following parameters:
 
-![Server Configuration](./misc/img/FHIR_Server_Create_Server_Form.png)
+![Server Configuration](https://github.com/grongierisc/formation-fhir-python/blob/main/misc/img/FHIR_Server_Create_Server_Form.png?raw=true)
 
 - **Core FHIR Package**: The core FHIR package to use for the FHIR server
   - r5
@@ -289,15 +291,15 @@ This can take a few minutes. 🕒 Let's go grabe a coffee. ☕️
 
 Great, we have now created the FHIR server. 🥳
 
-## 7.2. Bind the FHIR server to the OAuth2 Authorization Server
+## 6.2. Bind the FHIR server to the OAuth2 Authorization Server
 
 Select the FHIR server and scroll down to the `Edit` button.
 
-![FHIR Server](./misc/img/FHIR_Server_Edit.png)
+![FHIR Server](https://github.com/grongierisc/formation-fhir-python/blob/main/misc/img/FHIR_Server_Edit.png?raw=true)
 
 In the FHIR Server form, we need to fulfill the following parameters:
 
-![FHIR Server](./misc/img/FHIR_Server_Edit_Form.png)
+![FHIR Server](https://github.com/grongierisc/formation-fhir-python/blob/main/misc/img/FHIR_Server_Edit_Form.png?raw=true)
 
 - **OAuth2 Client Name**: The name of the client
   - App
@@ -306,7 +308,7 @@ Click on the `Save` button.
 
 Great, we have now bind the FHIR server to the OAuth2 Authorization Server. 🥳
 
-## 7.3. Test the FHIR server
+## 6.3. Test the FHIR server
 
 To test the FHIR server, you can use the following command:
 
@@ -340,7 +342,7 @@ Accept: application/fhir+json
 
 Great, you have now authenticated the request to the FHIR server. 🥳
 
-# 8. Filter FHIR Resources with InterSystems IRIS for Health
+# 7. Filter FHIR Resources with InterSystems IRIS for Health
 
 Ok, we now start a big topic.
 
@@ -348,22 +350,22 @@ The whole point of this topic will be to put in between the FHIR server and the 
 
 Here is a macro view of the architecture:
 
-![Interoperability](./misc/img/Schema.png)
+![Interoperability](https://github.com/grongierisc/formation-fhir-python/blob/main/misc/img/Schema.png?raw=true)
 
 And here is the workflow:
 
-![Workflow](./misc/img/Workflow.png)
+![Workflow](https://github.com/grongierisc/formation-fhir-python/blob/main/misc/img/Workflow.png?raw=true)
 
 What we notice here is that the `EAI` (Interoperability capabilities of IRIS for Health) will act as a path through for incoming requests to the FHIR server.
 Will filter the response from the FHIR server based on scopes and send the filtered response to the client application.
 
 Before going further, let me make a quick introduction to the Interoperability capabilities of IRIS for Health.
 
-## 8.1. Interoperability Framework
+## 7.1. Interoperability Framework
 
 This is the IRIS Framework.
 
-![FrameworkFull](https://raw.githubusercontent.com/thewophile-beep/formation-template/master/misc/img/FrameworkFull.png)
+![FrameworkFull](https://raw.githubusercontent.com/thewophile-beep/formation-template/master/misc/img/FrameworkFull.png?raw=true)
 
 The whole point of this framework is to provide a way to connect different systems together.
 
@@ -384,7 +386,7 @@ For this training, we will be using a pre-built interoperability production.
 
 And we will only focus on the `Business Process` to filter the response from the FHIR server based on scopes.
 
-## 8.2. Install the IoP
+## 7.2. Install the IoP
 
 For this part, we will use the `IoP` tool. `IoP` stands for Interoperability on Python.
 
@@ -406,7 +408,7 @@ iop --init
 
 This will install `iop` on the IRIS for Health container.
 
-## 8.3. Create the Interoperability Production
+## 7.3. Create the Interoperability Production
 
 Still in the container, run the following command:
 
@@ -426,7 +428,7 @@ You can now start the production.
 
 Great, you have now created the interoperability production. 🥳
 
-### 8.3.1. Test the Interoperability Production
+### 7.3.1. Test the Interoperability Production
 
 Get a token from the OAuth2 Authorization Server.
 
@@ -454,15 +456,15 @@ You can see the trace of the request in the interoperability production.
 http://localhost:8089/csp/healthshare/eai/EnsPortal.MessageViewer.zen?SOURCEORTARGET=Python.EAI.bp.MyBusinessProcess
 ```
 
-## 8.4. Modify the Business Process
+## 7.4. Modify the Business Process
 
-All the code for the `Business Process` is in this file : `./src/python/EAI/bp.py`
+All the code for the `Business Process` is in this file : `https://github.com/grongierisc/formation-fhir-python/blob/main/src/python/EAI/bp.py`
 
 For this training, we will be as a `TTD` (Test Driven Development) approach.
 
-All the tests for the `Business Process` are in this file : `./src/python/tests/EAI/test_bp.py`
+All the tests for the `Business Process` are in this file : `https://github.com/grongierisc/formation-fhir-python/blob/main/src/python/tests/EAI/test_bp.py`
 
-### 8.4.1. Prepare your development environment
+### 7.4.1. Prepare your development environment
 
 To prepare your development environment, we need to create a virtual environment.
 
@@ -472,7 +474,7 @@ source .venv/bin/activate
 pip install -r requirements.txt
 ```
 
-### 8.4.2. Run the tests
+### 7.4.2. Run the tests
 
 To run the tests, you can use the following command:
 
@@ -482,7 +484,7 @@ pytest
 
 Tests are failing.
 
-### 8.4.3. Implement the code
+### 7.4.3. Implement the code
 
 We have 4 functions to implement:
 
@@ -491,9 +493,9 @@ We have 4 functions to implement:
 - `filter_patient_resource`
 - `filter_resources`
 
-You can implement the code in the `./src/python/EAI/bp.py` file.
+You can implement the code in the `https://github.com/grongierisc/formation-fhir-python/blob/main/src/python/EAI/bp.py` file.
 
-#### 8.4.3.1. check_token
+#### 7.4.3.1. check_token
 
 This function will check if the token is valid and if the scope contains the `VIP` scope.
 If the token is valid and the scope contains the `VIP` scope, the function will return `True`, otherwise it will return `False`.
@@ -520,7 +522,7 @@ def check_token(self, token:str) -> bool:
 
 </details>
 
-#### 8.4.3.2. filter_patient_resource
+#### 7.4.3.2. filter_patient_resource
 
 This function will filter the patient resource.
 
@@ -557,7 +559,7 @@ def filter_patient_resource(self, patient_str:str) -> str:
 
 </details>
 
-#### 8.4.3.3. filter_resources
+#### 7.4.3.3. filter_resources
 
 This function will filter the resources.
 
@@ -601,7 +603,7 @@ def filter_resources(self, resource_str:str) -> str:
 
 </details>
 
-#### 8.4.3.4. on_fhir_request
+#### 7.4.3.4. on_fhir_request
 
 This function will be the entry point of the `Business Process`.
 
@@ -658,7 +660,7 @@ def on_fhir_request(self, request:'iris.HS.FHIRServer.Interop.Request'):
 
 </details>
 
-### 8.4.4. Run the tests
+### 7.4.4. Run the tests
 
 To run the tests, you can use the following command:
 
@@ -670,7 +672,7 @@ Tests are passing. 🥳
 
 You can now test the `Business Process` with the interoperability production.
 
-# 9. Create the custom operation
+# 8. Create the custom operation
 
 Last part of the training. 🏁
 
@@ -726,7 +728,7 @@ There is 3 types of custom operation:
 
 For this training, we will use the `Instance Operation` to create the custom operation.
 
-## 9.1. Coding the custom operation
+## 8.1. Coding the custom operation
 
 A custom operation must inherit from the `OperationHandler` class from the `FhirInteraction` module.
 
@@ -767,9 +769,9 @@ class OperationHandler(object):
 
 As we did in the previous part, we will use a `TTD` (Test Driven Development) approach.
 
-All the tests for the custom operation are in this file : `./src/python/tests/FhirInteraction/test_custom.py`
+All the tests for the custom operation are in this file : `https://github.com/grongierisc/formation-fhir-python/blob/main/src/python/tests/FhirInteraction/test_custom.py`
 
-### 9.1.1. add_supported_operations
+### 8.1.1. add_supported_operations
 
 This function will add the `Patient` merge operation to the supported operations.
 
@@ -822,7 +824,7 @@ def add_supported_operations(self,map:dict) -> dict:
 
 </details>
 
-### 9.1.2. process_operation
+### 8.1.2. process_operation
 
 This function will process the `Patient` merge operation.
 
@@ -911,9 +913,48 @@ def process_operation(
 
 </details>
 
-# 10. Tips & Tricks
+Test it :
 
-## 10.1. Csp log
+```http
+POST https://localhost:4443/fhir/r5/Patient/1/$merge
+Authorization : Bearer <Token>
+Accept: application/fhir+json
+
+{
+  "resourceType": "Patient",
+  "id": "2",
+  "meta": {
+    "versionId": "2"
+  }
+}
+```
+
+You will get the diff of the 2 patients.
+
+```json
+{
+    "values_changed": {
+        "root['address'][0]['city']": {
+            "new_value": "fdsfd",
+            "old_value": "Lynnfield"
+        },
+        "root['meta']['lastUpdated']": {
+            "new_value": "2024-02-24T09:11:00Z",
+            "old_value": "2024-02-28T13:50:27Z"
+        },
+        "root['meta']['versionId']": {
+            "new_value": "1",
+            "old_value": "2"
+        }
+    }
+}
+```
+
+Great, you have now created the custom operation. 🥳
+
+# 9. Tips & Tricks
+
+## 9.1. Csp log
 
 In %SYS
 
@@ -922,7 +963,7 @@ set ^%ISCLOG = 5
 zw ^ISCLOG
 ```
 
-## 10.2. BP Solution
+## 9.2. BP Solution
 
 
 <details>
@@ -963,6 +1004,8 @@ class MyBusinessProcess(BusinessProcess):
                 return rsp
 
             filtered_payload_string = self.filter_resources(payload_str)
+            if filtered_payload_string == '':
+                return rsp
 
             # write the json string to a quick stream
             quick_stream = self.string_to_quick_stream(filtered_payload_string)
@@ -1036,6 +1079,8 @@ class MyBusinessProcess(BusinessProcess):
         elif resource_type == 'Patient':
             # filter the patient
             obj = patient.Patient(**json.loads(self.filter_patient_resource(resource_str)))
+        else:
+            return resource_str
 
         return obj.json()
 ```
