@@ -5,3 +5,4 @@ intersystems_iris @ https://github.com/intersystems-community/intersystems-irisp
 PyJWT
 fhir.resources
 pytest
+deepdiff
