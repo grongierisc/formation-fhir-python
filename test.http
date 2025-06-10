@@ -1,0 +1,177 @@
+POST https://localhost/oauth2/token
+Content-Type: application/x-www-form-urlencoded
+Authorization: Basic EUo8EpHfjOcjqKLLVAGqHOYscjFG7qguTbpXQc9tfPw:_eteRFJ0xmP6f1nEJ0xie1wU6OlDMKZtSZGiYRNSefA7_GWB4MkyX4fo8Pqxv9JR8MvvP0j0dwiQd2nEl-8E1w
+
+grant_type=client_credentials&scope=user/*.* VIP&aud=https://webgateway/fhir/r4
+
+###
+
+GET https://webgateway/fhir/Patient
+Content-Type: application/fhir+json
+Accept: application/fhir+json
+Authorization: Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IjEifQ.eyJqdGkiOiJodHRwczovL3dlYmdhdGV3YXkvb2F1dGgyLk9ZVktqNVVQMHJ4YjdWbVNVS0dWZVRRNjB0dyIsImlzcyI6Imh0dHBzOi8vd2ViZ2F0ZXdheS9vYXV0aDIiLCJzdWIiOiJFVW84RXBIZmpPY2pxS0xMVkFHcUhPWXNjakZHN3FndVRicFhRYzl0ZlB3IiwiZXhwIjoxNzQ5MjE5MjA0LCJhdWQiOiJodHRwczovL3dlYmdhdGV3YXkvZmhpci9yNCIsInNjb3BlIjoiVklQIHVzZXIvKi4qIiwiaWF0IjoxNzQ5MjE1NjA0fQ.OKk_qYV-dyN1GR2dbvIpdj5UNsYZfu9DQgXK_H09KVVM3-ig7UWv3I015M8cgDP7G4w4KevQzMkZwdeohYrGGZlHKGK_a8b7zbjL6wHO5vyUCNW8LNz1Ujfly5Cov1xVq_j1r-ccr0BdjWRIbFutKVrdNb0m00hXbN6XL8-O6i4vOLRpg4JzCS4D-scHekTV_Nwvc8t66k9-GRbULX69yQ3ojHI3MuaoCFkZfeS3TQyskHC6AL4FHSop0cb5nMbCmaQs5UylQ3imBUkwRz78zq4CU0nbTiqiCUiKUa1GqITLmZndZhtuylSs6ZGpSHX2_GYyUfmwoYiR42M0hCxHoQ
+
+###
+POST https://localhost:4443/fhir/Patient 
+Content-Type: application/fhir+json
+Accept: application/fhir+json
+prefer: return=representation
+Authorization: Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6MX0.eyJqdGkiOiJodHRwczovL3dlYmdhdGV3YXkvb2F1dGgyLlo4ZU5zT0ZIYTVsalFOWm04T08zNXlJVlhRdyIsImlzcyI6Imh0dHBzOi8vd2ViZ2F0ZXdheS9vYXV0aDIiLCJzdWIiOiJ4dGM2NXJ1bVRtMjdnM0lxRmhhUWQxSGFDYndGYl9NbVM2aUZMSWR6UnFJIiwiZXhwIjoxNzA5NzIzMDI1LCJhdWQiOiJodHRwczovL3dlYmdhdGV3YXkvZmhpci9yNSIsInNjb3BlIjoidXNlci8qLioiLCJpYXQiOjE3MDk3MTk0MjV9.akq9-1-P9lDcVzlUBU4allVSI2i3nl0V2BcikdqNlqBn22He6jZnpIHb9y2gsWgQoeXWfvkNtBkb8CIDwap-5j68w12VYeiq_7uMTM7ni3h69iKWZLor8qFyQc2-4Y1cetVSC0X1ADAs25TL6JbEfFuMqKSMpuhwpUxXFaLOmYHovmBUgKmI2kedPQrUL3eVXWO_WpT4JcEUy0R3JkSTOpUM6FrvACrVNmTLje3LsEPlfuncCt0f4-S89TlzNsr_BqkMUSSfb8Fni0O6peiX38TcOBKqq_hzFAFhNoY5zH9Xp_xkB-dnTosymEQMLDl1ag89scvL6ZdyQRPqfzWlnw
+
+{
+    "resourceType": "Patient",
+    "address": [
+        {
+            "city": "Lynnfield",
+            "line": [
+                "672 Bartoletti Arcade"
+            ],
+            "postalCode": "01940",
+            "state": "Massachusetts"
+        }
+    ],
+    "birthDate": "1994-08-02",
+    "extension": [
+        {
+            "url": "http://intersystems.com/fhir/extn/sda3/lib/patient-entered-on",
+            "valueDateTime": "2020-09-01T07:29:14+00:00"
+        },
+        {
+            "url": "http://intersystems.com/fhir/extn/sda3/lib/patient-ethnic-group",
+            "valueCodeableConcept": {
+                "coding": [
+                    {
+                        "code": "2186-5",
+                        "display": "non-hispanic",
+                        "system": "urn:oid:2.16.840.1.113883.6.238"
+                    }
+                ]
+            }
+        },
+        {
+            "url": "http://intersystems.com/fhir/extn/sda3/lib/patient-races",
+            "valueCodeableConcept": {
+                "coding": [
+                    {
+                        "code": "2106-3",
+                        "display": "white",
+                        "system": "urn:oid:2.16.840.1.113883.6.238"
+                    }
+                ]
+            }
+        }
+    ],
+    "gender": "male",
+    "identifier": [
+        {
+            "type": {
+                "coding": [
+                    {
+                        "code": "MR",
+                        "system": "http://terminology.hl7.org/CodeSystem/v2-0203"
+                    }
+                ],
+                "text": "MRN"
+            },
+            "value": "26504347-0230-8fa0-a625-db55483a3d2d"
+        }
+    ],
+    "name": [
+        {
+            "family": "Gaylord",
+            "given": [
+                "Michal"
+            ],
+            "text": "Michal Gaylord",
+            "use": "official"
+        }
+    ],
+    "id": "1",
+    "meta": {
+        "lastUpdated": "2024-02-24T09:11:00Z",
+        "versionId": "1"
+    }
+}
+
+
+###
+GET https://localhost:4443/fhir/Patient/1/$diff
+Content-Type: application/fhir+json
+Accept: application/fhir+json
+prefer: return=representation
+Authorization: Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6MX0.eyJqdGkiOiJodHRwczovL3dlYmdhdGV3YXkvb2F1dGgyLkQwLTlGb2NCMUFkSzlzQ2NHbTdNRTJfSS1BMCIsImlzcyI6Imh0dHBzOi8vd2ViZ2F0ZXdheS9vYXV0aDIiLCJzdWIiOiJ4dGM2NXJ1bVRtMjdnM0lxRmhhUWQxSGFDYndGYl9NbVM2aUZMSWR6UnFJIiwiZXhwIjoxNzA5NzM5Mzc1LCJhdWQiOiJodHRwczovL3dlYmdhdGV3YXkvZmhpci9yNSIsInNjb3BlIjoiVklQIHVzZXIvKi4qIiwiaWF0IjoxNzA5NzM1Nzc1fQ.FwuDCDy8TE1p53fEzZljyhBuhhrP74lJ5sM05CBUTO0xjWHkuJTB0ndfr7bkxPg_Z_6DkzatE6DldbzRAqe25qRV_XIXlJzFkC20KD0slNrf6X627ejUvOpg7K20ju-KS9WDPwj3WEqIoqariAf_DLW9bFuq-u3YnLouOq1Cvtwk1v4uFt66pnOPxdIclK3j3dN6qIIume-Ei7qRweUzdtvilBD75dclQvQLxuu5uKeaAnkcVo4mCYjza36CqqiMPOIt4XsS5Msm9F3obm3xHzxCPHpkFqtdynh8MQLmzdvtz429ir11vHN9dLcStCh1wYYRZlF0Np6hTV4uYbc17w
+
+{
+    "resourceType": "Patient",
+    "address": [
+        {
+            "city": "fdsf",
+            "line": [
+                "672 Bartoletti Arcade"
+            ],
+            "postalCode": "01940",
+            "state": "Massachusetts"
+        }
+    ],
+    "birthDate": "1994-08-02",
+    "extension": [
+        {
+            "url": "http://intersystems.com/fhir/extn/sda3/lib/patient-entered-on",
+            "valueDateTime": "2020-09-01T07:29:14+00:00"
+        },
+        {
+            "url": "http://intersystems.com/fhir/extn/sda3/lib/patient-ethnic-group",
+            "valueCodeableConcept": {
+                "coding": [
+                    {
+                        "code": "2186-5",
+                        "display": "non-hispanic",
+                        "system": "urn:oid:2.16.840.1.113883.6.238"
+                    }
+                ]
+            }
+        },
+        {
+            "url": "http://intersystems.com/fhir/extn/sda3/lib/patient-races",
+            "valueCodeableConcept": {
+                "coding": [
+                    {
+                        "code": "2106-3",
+                        "display": "white",
+                        "system": "urn:oid:2.16.840.1.113883.6.238"
+                    }
+                ]
+            }
+        }
+    ],
+    "gender": "male",
+    "identifier": [
+        {
+            "type": {
+                "coding": [
+                    {
+                        "code": "MR",
+                        "system": "http://terminology.hl7.org/CodeSystem/v2-0203"
+                    }
+                ],
+                "text": "MRN"
+            },
+            "value": "26504347-0230-8fa0-a625-db55483a3d2d"
+        }
+    ],
+    "name": [
+        {
+            "family": "Gaylord",
+            "given": [
+                "Michal"
+            ],
+            "text": "Michal Gaylord",
+            "use": "official"
+        }
+    ],
+    "id": "1",
+    "meta": {
+        "lastUpdated": "2024-02-24T09:11:00Z",
+        "versionId": "1"
+    }
+}
