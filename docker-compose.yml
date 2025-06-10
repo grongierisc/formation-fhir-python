@@ -4,6 +4,7 @@ services:
     build: 
       context: .
       dockerfile: Dockerfile
+    image: formation-fhir-python-iris:latest
     restart: always
     ports: 
       - 1972
@@ -15,17 +16,17 @@ services:
       - ISC_OAUTH_SECRET_PATH=/irisdev/app/misc/auth/secret.json
 
   webgateway:
-    build:
-      context: ./webgateway
-      args:
-        link: 'iris'
-        port: '52773'
-    image: proxyiris:latest
+    image: containers.intersystems.com/intersystems/webgateway:latest-em
+    init: true
     ports:
-    - "443:443"
+    - 443:443
+    environment:
+    - ISC_CSP_CONF_FILE=/webgateway/CSP.conf
+    - ISC_CSP_INI_FILE=/webgateway/CSP.ini
     volumes:
-    - ./webgateway/CSP.ini:/opt/webgateway/bin/CSP.ini
-    - ./webgateway/httpd-csp.conf:/usr/local/apache2/conf/extra/httpd-csp.conf
+      - ./webgateway:/webgateway
+      - ./webgateway/cert:/opt/cert
+
 
   # postgres:
   #   image: postgres:13.2
