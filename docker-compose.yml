@@ -22,7 +22,7 @@ services:
         port: '52773'
     image: proxyiris:latest
     ports:
-    - "4443:443"
+    - "443:443"
     volumes:
     - ./webgateway/CSP.ini:/opt/webgateway/bin/CSP.ini
     - ./webgateway/httpd-csp.conf:/usr/local/apache2/conf/extra/httpd-csp.conf

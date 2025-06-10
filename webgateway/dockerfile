@@ -17,7 +17,7 @@ RUN sed -i 's,^#\(LoadModule socache_shmcb_module modules/mod_socache_shmcb.so\)
 RUN sed -i 's,^#\(Include conf/extra/httpd-ssl.conf\)$,\1,' $_HTTPD_DIR/conf/httpd.conf
 
 #Enable webgateway
-COPY --from=containers.intersystems.com/intersystems/webgateway:2021.2.0.651.0 /opt/webgateway/bin/ /opt/webgateway/bin
+COPY --from=containers.intersystems.com/intersystems/webgateway:latest-cd /opt/webgateway/bin/ /opt/webgateway/bin
 
 COPY httpd-csp.conf $_HTTPD_DIR/conf/extra
 COPY --chown=www-data:www-data CSP.ini /opt/webgateway/bin/CSP.ini
