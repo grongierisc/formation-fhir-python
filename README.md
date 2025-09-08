@@ -91,7 +91,7 @@ This command will start the IRIS for Health container and the Web Gateway contai
 Once the containers are started, you can access the FHIR server at the following URL:
 
 ```url
-https://localhost:4443/fhir/r5/
+https://localhost:4443/fhir/r4/
 ```
 
 ## 3.2. Access the InterSystems IRIS Management Portal
@@ -280,7 +280,7 @@ In the Server Configuration form, we need to fulfill the following parameters:
 - **Core FHIR Package**: The core FHIR package to use for the FHIR server
   - r5
 - **URL**: The URL of the FHIR server
-  - /fhir/r5
+  - /fhir/r4
 - **Interactions strategy**: The interactions strategy to use for the FHIR server
   - FHIR.Python.InteractionsStrategy
   - ⚠️ **WARNING** ⚠️  : Not like in the picutre, we need to select the `FHIR.Python.InteractionsStrategy` interactions strategy.
@@ -313,7 +313,7 @@ Great, we have now bind the FHIR server to the OAuth2 Authorization Server. 🥳
 To test the FHIR server, you can use the following command:
 
 ```http
-GET https://localhost:4443/fhir/r5/Patient
+GET https://localhost:4443/fhir/r4/Patient
 ```
 
 Without the `Authorization` header, you will get a `401 Unauthorized` response.
@@ -327,7 +327,7 @@ POST https://localhost:4443/oauth2/token
 Content-Type: application/x-www-form-urlencoded
 Authorization: Basic <client_id>:<client_secret>
 
-grant_type=client_credentials&scope=user/Patient.read&aud=https://localhost:4443/fhir/r5
+grant_type=client_credentials&scope=user/Patient.read&aud=https://localhost:4443/fhir/r4
 ```
 
 You will get a `200 OK` response with the `access_token` and the `token_type`.
@@ -335,7 +335,7 @@ You will get a `200 OK` response with the `access_token` and the `token_type`.
 Now you can use the `access_token` to authenticate the request to the FHIR server.
 
 ```http
-GET https://localhost:4443/fhir/r5/Patient
+GET https://localhost:4443/fhir/r4/Patient
 Authorization: Bearer <access_token>
 Accept: application/fhir+json
 ```
@@ -437,7 +437,7 @@ POST https://localhost:4443/oauth2/token
 Content-Type: application/x-www-form-urlencoded
 Authorization : Basic <client_id>:<client_secret>
 
-grant_type=client_credentials&scope=user/Patient.read&aud=https://webgateway/fhir/r5
+grant_type=client_credentials&scope=user/Patient.read&aud=https://webgateway/fhir/r4
 ```
 
 ⚠️ **WARNING** ⚠️ : we change the `aud` parameter to the URL of the Web Gateway to expose the FHIR server over HTTPS.
@@ -683,7 +683,7 @@ The custom operation will be a `Patient` merge operation, the result will be the
 example:
 
 ```http
-POST https://localhost:4443/fhir/r5/Patient/1/$merge
+POST https://localhost:4443/fhir/r4/Patient/1/$merge
 Authorization : Bearer <Token>
 Accept: application/fhir+json
 Content-Type: application/fhir+json
@@ -916,7 +916,7 @@ def process_operation(
 Test it :
 
 ```http
-POST https://localhost:4443/fhir/r5/Patient/1/$merge
+POST https://localhost:4443/fhir/r4/Patient/1/$merge
 Authorization : Bearer <Token>
 Accept: application/fhir+json
 

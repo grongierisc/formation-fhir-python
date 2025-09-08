@@ -36,4 +36,7 @@
 
     Set ^|"HSSYS"|%SYS("HealthShare","NetworkHostName") = "webgateway"
 
+    Set ^|"HSSYS"|%SYS("HealthShare","SSLAccess", "Active") = 1
+    Set ^|"HSSYS"|%SYS("HealthShare","SSLAccess", "SSLConfig") = "BFC_SSL"
+
     halt
