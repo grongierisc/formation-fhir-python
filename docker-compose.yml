@@ -11,9 +11,11 @@ services:
       - 8089:52773
       - 53773
     volumes:
-      - ./:/irisdev/app/
+      - .:/irisdev/app
+      - ./dur:/dur
     environment:
-      - ISC_OAUTH_SECRET_PATH=/irisdev/app/misc/auth/secret.json
+      - ISC_CPF_MERGE_FILE=/irisdev/app/merge.cpf
+      - ISC_DATA_DIRECTORY=/dur/iris
 
   webgateway:
     image: containers.intersystems.com/intersystems/webgateway:latest-em

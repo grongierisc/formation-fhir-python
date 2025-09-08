@@ -6,3 +6,4 @@ PyJWT
 fhir.resources
 pytest
 deepdiff
+python-fhir-converter @ https://github.com/grongierisc/fhir-converter/releases/download/v0.4.9/python_fhir_converter-0.4.9-py3-none-any.whl

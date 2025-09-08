@@ -34,4 +34,6 @@
     zn "%SYS"
     do $system.OBJ.Load("/irisdev/app/src/cls/OAuth2/Server/V2/REST.cls")
 
+    Set ^|"HSSYS"|%SYS("HealthShare","NetworkHostName") = "webgateway"
+
     halt

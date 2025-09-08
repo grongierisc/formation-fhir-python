@@ -128,7 +128,7 @@ class CustomStrategy(Strategy):
     
     def on_get_capability_statement(self, capability_statement):
         # Example : del resources Account
-        capability_statement['rest'][0]['resource'] = [resource for resource in capability_statement['rest'][0]['resource'] if resource['type'] != 'Account']
+        #capability_statement['rest'][0]['resource'] = [resource for resource in capability_statement['rest'][0]['resource'] if resource['type'] != 'Account']
         return capability_statement
 
 class CustomInteraction(Interaction):
@@ -148,22 +148,24 @@ class CustomInteraction(Interaction):
         #Evaluate consent based on the resource and user/roles.
         #Returning 0 indicates this resource shouldn't be displayed - a 404 Not Found
         #will be returned to the user.
-        return self.consent(fhir_object['resourceType'],
-                        self.requesting_user,
-                        self.requesting_roles)
+        # return self.consent(fhir_object['resourceType'],
+        #                 self.requesting_user,
+        #                 self.requesting_roles)
+        return True
 
     def post_process_search(self, rs, resource_type):
         #Iterate through each resource in the search set and evaluate
         #consent based on the resource and user/roles.
         #Each row marked as deleted and saved will be excluded from the Bundle.
-        rs._SetIterator(0)
-        while rs._Next():
-            if not self.consent(rs.ResourceType,
-                            self.requesting_user,
-                            self.requesting_roles):
-                #Mark the row as deleted and save it.
-                rs.MarkAsDeleted()
-                rs._SaveRow()
+        # rs._SetIterator(0)
+        # while rs._Next():
+        #     if not self.consent(rs.ResourceType,
+        #                     self.requesting_user,
+        #                     self.requesting_roles):
+        #         #Mark the row as deleted and save it.
+        #         rs.MarkAsDeleted()
+        #         rs._SaveRow()
+        pass
 
     def consent(self, resource_type, user, roles):
         #Example consent logic - only allow users with the role '%All' to see

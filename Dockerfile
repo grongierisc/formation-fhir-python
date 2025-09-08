@@ -1,4 +1,4 @@
-FROM intersystemsdc/irishealth-community:preview as builder
+FROM intersystemsdc/irishealth-community:latest AS builder
 
 RUN \
 	--mount=type=bind,src=.,dst=/irisdev/app \
@@ -7,7 +7,7 @@ RUN \
 	iris session IRIS < /tmp/iris.script && \
 	iris stop iris quietly
 
-FROM intersystemsdc/irishealth-community:preview as final
+FROM intersystemsdc/irishealth-community:latest AS final
 
 ADD --chown=${ISC_PACKAGE_MGRUSER}:${ISC_PACKAGE_IRISGROUP} https://github.com/grongierisc/iris-docker-multi-stage-script/releases/latest/download/copy-data.py /irisdev/app/copy-data.py
 
@@ -22,8 +22,8 @@ RUN --mount=type=bind,source=/,target=/builder/root,from=builder \
     python3 /irisdev/app/copy-data.py -c /usr/irissys/iris.cpf -d /builder/root/ 
 
 # Python stuff
-ENV IRISUSERNAME "SuperUser"
-ENV IRISPASSWORD "SYS"
-ENV IRISNAMESPACE "EAI"
-ENV IRISINSTALLDIR $ISC_PACKAGE_INSTALLDIR
+ENV IRISUSERNAME=SuperUser
+ENV IRISPASSWORD=SYS
+ENV IRISNAMESPACE=EAI
+ENV IRISINSTALLDIR=$ISC_PACKAGE_INSTALLDIR
 ENV LD_LIBRARY_PATH=$IRISINSTALLDIR/bin:$LD_LIBRARY_PATH
