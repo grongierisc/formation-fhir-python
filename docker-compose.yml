@@ -1,6 +1,20 @@
 version: '3.6'
 services:
+  # Init container to fix permissions
+  init-permissions:
+    image: alpine:latest
+    volumes:
+      - ./dur:/dur
+    command: >
+      sh -c "
+        echo 'Fixing /dur directory permissions...' &&
+        chown -R 51773:51773 /dur &&
+        echo 'Permissions fixed successfully'
+      "
+    
   iris:
+    depends_on:
+      - init-permissions
     build: 
       context: .
       dockerfile: Dockerfile
