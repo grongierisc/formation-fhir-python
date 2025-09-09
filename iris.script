@@ -39,4 +39,12 @@
     Set ^|"HSSYS"|%SYS("HealthShare","SSLAccess", "Active") = 1
     Set ^|"HSSYS"|%SYS("HealthShare","SSLAccess", "SSLConfig") = "BFC_SSL"
 
+    set tService = ##class(HS.Registry.Service.HTTP).%New()
+    set tService.Name = "fhir"
+    set tService.Host = "webgateway"
+    set tService.SSLConfig = "BFC_SSL"
+    set tService.URL = "/fhir/r4"
+    set tService.Type = "HTTP"
+    do tService.%Save()
+
     halt
