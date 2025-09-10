@@ -12,6 +12,7 @@ class FhirConverterOperation(BusinessOperation):
     def on_init(self):
         if not hasattr(self, 'template_path'):
             self.template_path = '/irisdev/app/templates'
+            totot= True
 
         # create a renderer for the input data type
         self.renderer = Hl7v2Renderer(
