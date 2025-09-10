@@ -1,0 +1,23 @@
+{
+    "folders": [
+        {
+            "name": "templates (Templates)",
+            "path": "/Users/grongier/git/fhir-converter-custom/templates"
+        },
+        {
+            "path": "/Users/grongier/git/fhir-converter-custom/input"
+        },
+        {
+            "name" : "root",
+            "path": "/Users/grongier/git/fhir-converter-custom/"
+        }
+    ],
+    "settings": {
+        "workbench.editor.enablePreview": false,
+        "diffEditor.renderSideBySide": false,
+        "microsoft.health.fhir.converter.enableUnusedSegmentsDiagnostic": false,
+        "microsoft.health.fhir.converter.templateFolder": "/Users/grongier/git/fhir-converter-custom/templates",
+        "microsoft.health.fhir.converter.resultFolder": "/Users/grongier/git/fhir-converter-custom/output",
+        "microsoft.health.fhir.converter.engineExecCmd": "/Users/grongier/git/fhir-converter-custom/.venv/bin/fhir_converter_hl7v2"
+    }
+}
