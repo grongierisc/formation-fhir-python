@@ -1,9 +1,6 @@
 iris-pex-embedded-python
-google-auth-oauthlib==1.0.0
-fhir.resources
-intersystems_iris @ https://github.com/intersystems-community/intersystems-irispython/releases/download/3.7.6/intersystems_iris-3.7.6-py3-none-any.whl
+iris-embedded-python-wrapper
 PyJWT
-fhir.resources
-pytest
-deepdiff
-python-fhir-converter @ https://github.com/grongierisc/fhir-converter/releases/download/v0.4.9/python_fhir_converter-0.4.9-py3-none-any.whl
+requests
+irissqlcli
+iris-fhir-python-strategy @ git+https://github.com/grongierisc/iris-fhir-python-strategy@v0.2.0

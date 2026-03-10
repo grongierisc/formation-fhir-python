@@ -1,0 +1,52 @@
+    zn "%SYS"
+
+    Set ^|"HSSYS"|%SYS("HealthShare","NetworkHostName") = "webgateway"
+
+    Set ^|"HSSYS"|%SYS("HealthShare","SSLAccess", "Active") = 1
+    Set ^|"HSSYS"|%SYS("HealthShare","SSLAccess", "SSLConfig") = "BFC_SSL"
+
+    zn "HSLIB"
+
+    set namespace="FHIRSERVER"
+
+    //Install a Foundation namespace and change to it
+    Do ##class(HS.Util.Installer.Foundation).Install(namespace)
+    zn namespace
+
+    // Install elements that are required for a FHIR-enabled namespace
+    Do ##class(HS.FHIRServer.Installer).InstallNamespace()
+
+    //If a var env FHIR_SERVER_ENABLE is set to "1", enable the FHIR server
+    set fhirServerEnable = $SYSTEM.Util.GetEnviron("FHIR_SERVER_ENABLE")
+    // Get the FHIR Version from the environment variable FHIR_SERVER_VERSION
+    set fhirVersion = $SYSTEM.Util.GetEnviron("FHIR_SERVER_VERSION")
+    if fhirVersion="" set fhirVersion="R4"
+    // Get path to the FHIR from the environment variable FHIR_SERVER_PATH
+    set fhirPath = $SYSTEM.Util.GetEnviron("FHIR_SERVER_PATH")
+    if fhirPath="" set fhirPath="/fhir/r4"
+    // Get the strategy class from the environment variable FHIR_SERVER_STRATEGY
+    set strategy = $SYSTEM.Util.GetEnviron("FHIR_SERVER_STRATEGY")
+    if strategy="" set strategy="FHIR.Python.InteractionsStrategy"
+    zw:(fhirServerEnable) "Enabling FHIR server at path "_fhirPath_" with version "_fhirVersion_" and strategy "_strategy
+    Do:(fhirServerEnable) ##class(HS.FHIRServer.Installer).InstallInstance(fhirPath, strategy, fhirVersion, "", 0)
+    zw:(fhirServerEnable) "#### FHIR Server is enabled ####"
+    zw:(fhirServerEnable=0) "FHIR server not enabled. To enable, set environment variable FHIR_SERVER_ENABLE=1"
+
+
+    zn "HSLIB"
+
+    Do ##class(HS.Util.Installer.Foundation).Install("EAI")
+
+    zn "EAI"
+
+    zw ##class(HS.FHIRServer.Installer).InteropAdapterConfig("/fhir")
+
+    set tService = ##class(HS.Registry.Service.HTTP).%New()
+    set tService.Name = "fhir"
+    set tService.Host = "webgateway"
+    set tService.SSLConfig = "BFC_SSL"
+    set tService.URL = fhirPath
+    set tService.Type = "HTTP"
+    do tService.%Save()
+
+    halt

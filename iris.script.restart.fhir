@@ -1,0 +1,7 @@
+    zn "FHIRSERVER"
+
+    zn "%SYS"
+
+    do KillAllCSPJobs^%SYS.cspServer2()
+
+    halt 
