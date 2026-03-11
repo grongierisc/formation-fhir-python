@@ -28,9 +28,9 @@ import requests
 # Defaults
 # ---------------------------------------------------------------------------
 _DEFAULT_WEBGATEWAY_PORT = 8081
-_DEFAULT_FHIR_BASE_URL = f"http://localhost:{_DEFAULT_WEBGATEWAY_PORT}/fhir"
-_WEBGATEWAY_CONTAINER_NAME = "iris-fhir-facade-and-repo-template-webgateway-1"
-_IRIS_CONTAINER_NAME = "iris-fhir-facade-and-repo-template-iris-1"
+_DEFAULT_FHIR_BASE_URL = f"http://localhost:{_DEFAULT_WEBGATEWAY_PORT}/fhir/r4"
+_WEBGATEWAY_CONTAINER_NAME = "formation-fhir-python-webgateway-1"
+_IRIS_CONTAINER_NAME = "formation-fhir-python-iris-1"
 _RESTART_SCRIPT_PATH = "/irisdev/app/iris.script.restart.fhir"
 _STARTUP_TIMEOUT_SECONDS = 120
 _POST_RESTART_PROBE_TIMEOUT = 60

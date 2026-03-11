@@ -1,6 +1,8 @@
-iris-pex-embedded-python
+iris-pex-embedded-python==3.5.6b8
 iris-embedded-python-wrapper
 PyJWT
 requests
 irissqlcli
 iris-fhir-python-strategy @ git+https://github.com/grongierisc/iris-fhir-python-strategy@v0.2.0
+pytest
+deepdiff
