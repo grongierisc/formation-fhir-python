@@ -1,19 +1,22 @@
+@client_id = EZj1PYLUnrhwti4dbCKR9rCJOWmycehgllgnde8V2Gs
+@client_secret = MAlGm_9b3kOoCPipRsMUpFZhM2f0611oF9MM6TqHkjCUDLdODj8n43kPB0YsYFMgEmqXZcrEP3fDahHxxMECNg
+
+
 # @name getToken
 POST https://localhost/oauth2/token
 Content-Type: application/x-www-form-urlencoded
-Authorization: Basic 1aU_7Jke58NOcg4UoBKjHFAGIwKFch2vZ05CfoWDt_c:wzxj0Coz16dc1vQbInpE9XOx71rr1ImMkWAQFpA6_TiHseFnRm-E3N5FMC-OjW0Fa5dKMB-4dhKQiuapiqO1DQ
+Authorization: Basic {{client_id}}:{{client_secret}}
 
 grant_type=client_credentials&scope=user/*.read VIP&aud=https://webgateway/fhir/r4
 
 ###
-
 GET https://webgateway/fhir/Patient
 Content-Type: application/fhir+json
 Accept: application/fhir+json
 Authorization: Bearer {{getToken.response.body.access_token}}
 
 ###
-POST https://webgateway/fhir/Patient 
+POST https://webgateway/fhir/r4/Patient 
 Content-Type: application/fhir+json
 Accept: application/fhir+json
 prefer: return=representation
@@ -86,93 +89,5 @@ Authorization: Bearer {{getToken.response.body.access_token}}
             "text": "Michal Gaylord",
             "use": "official"
         }
-    ],
-    "id": "1",
-    "meta": {
-        "lastUpdated": "2024-02-24T09:11:00Z",
-        "versionId": "1"
-    }
-}
-
-
-###
-GET https://localhost:4443/fhir/Patient/1/$diff
-Content-Type: application/fhir+json
-Accept: application/fhir+json
-prefer: return=representation
-Authorization: Bearer {{getToken.response.body.access_token}}
-
-{
-    "resourceType": "Patient",
-    "address": [
-        {
-            "city": "fdsf",
-            "line": [
-                "672 Bartoletti Arcade"
-            ],
-            "postalCode": "01940",
-            "state": "Massachusetts"
-        }
-    ],
-    "birthDate": "1994-08-02",
-    "extension": [
-        {
-            "url": "http://intersystems.com/fhir/extn/sda3/lib/patient-entered-on",
-            "valueDateTime": "2020-09-01T07:29:14+00:00"
-        },
-        {
-            "url": "http://intersystems.com/fhir/extn/sda3/lib/patient-ethnic-group",
-            "valueCodeableConcept": {
-                "coding": [
-                    {
-                        "code": "2186-5",
-                        "display": "non-hispanic",
-                        "system": "urn:oid:2.16.840.1.113883.6.238"
-                    }
-                ]
-            }
-        },
-        {
-            "url": "http://intersystems.com/fhir/extn/sda3/lib/patient-races",
-            "valueCodeableConcept": {
-                "coding": [
-                    {
-                        "code": "2106-3",
-                        "display": "white",
-                        "system": "urn:oid:2.16.840.1.113883.6.238"
-                    }
-                ]
-            }
-        }
-    ],
-    "gender": "male",
-    "identifier": [
-        {
-            "type": {
-                "coding": [
-                    {
-                        "code": "MR",
-                        "system": "http://terminology.hl7.org/CodeSystem/v2-0203"
-                    }
-                ],
-                "text": "MRN"
-            },
-            "value": "26504347-0230-8fa0-a625-db55483a3d2d"
-        }
-    ],
-    "name": [
-        {
-            "family": "Gaylord",
-            "given": [
-                "Michal"
-            ],
-            "text": "Michal Gaylord",
-            "use": "official"
-        }
-    ],
-    "id": "1",
-    "meta": {
-        "lastUpdated": "2024-02-24T09:11:00Z",
-        "versionId": "1"
-    }
+    ]
 }
