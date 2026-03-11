@@ -58,10 +58,11 @@ class FhirMainProcess(BusinessProcess):
         """
         Returns the token string from the JWT token.
         """
-        ## ##class(HS.HC.Util.InfoCache).GetTokenInfoItem(tokenCacheId, "token_string")
-        token_info = iris.cls('HS.HC.Util.InfoCache').GetTokenInfoItem(token_id, 'token_string')
-        if not token_info:
-            raise ValueError(f'Token with ID {token_id} not found in the cache.')
+        try:
+            token_info = iris.cls('HS.HC.Util.InfoCache').GetTokenInfoItem(token_id, 'token_string')
+        except Exception as e:
+            self.log_error(f'Error getting token string: {e}')
+            return ''
         return token_info
 
     def check_token(self, token:str) -> bool:
