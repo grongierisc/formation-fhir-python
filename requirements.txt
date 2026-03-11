@@ -1,4 +1,4 @@
-iris-pex-embedded-python==3.5.6b8
+iris-pex-embedded-python==3.5.6b10
 iris-embedded-python-wrapper
 PyJWT
 requests
