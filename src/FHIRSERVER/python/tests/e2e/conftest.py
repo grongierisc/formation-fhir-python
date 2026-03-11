@@ -122,9 +122,9 @@ def fhir_base_url() -> Generator[str, None, None]:
     customization module inside IRIS so local changes are applied.
 
     Priority:
-    1. ``FHIR_BASE_URL`` environment variable (already includes /fhir path).
+    1. ``FHIR_BASE_URL`` environment variable (already includes /fhir/r4 path).
     2. Docker SDK — scan running containers for the webgateway port.
-    3. Hard-coded default ``http://localhost:8081/fhir``.
+    3. Hard-coded default ``http://localhost:8081/fhir/r4``.
 
     The fixture skips the entire test session if the endpoint is unreachable.
     """
@@ -139,7 +139,7 @@ def fhir_base_url() -> Generator[str, None, None]:
             client = docker.from_env()
             port = _find_webgateway_port(client)
             if port is not None:
-                base_url = f"http://localhost:{port}/fhir"
+                base_url = f"http://localhost:{port}/fhir/r4"
             iris_container = _find_iris_container(client)
         except Exception:
             pass  # docker not available or container not found
