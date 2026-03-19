@@ -6,13 +6,11 @@
       },
     "objectscript.conn" :{
       "ns": "FHIRSERVER",
-      "active": true,
+      "active": false,
       "username": "SuperUser",
       "password": "SYS",
-      "docker-compose": {
-        "service": "iris",
-        "internalPort": 52773
-      },
+      "host": "localhost",
+      "port": 8081,
       "links": {
         "FHIR server test": "http://localhost:${port}/fhir/r4/metadata",
         "FHIR SQL Demo": "http://localhost:${port}/csp/fhirsql/index.html",
