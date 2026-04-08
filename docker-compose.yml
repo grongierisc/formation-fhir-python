@@ -27,6 +27,7 @@ services:
       - FHIR_CUSTOMIZATION_MODULE=custom_decorators
     ports: 
       - 1972
+      - 5678:5678
     volumes:
       - .:/irisdev/app
       - iris-dur:/dur

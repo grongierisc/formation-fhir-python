@@ -71,35 +71,10 @@ docker_process_init_files() {
 					. "$f"
 				fi
 				;;
-			*.sql)     printf '%s: running %s\n' "$0" "$f"; cat $f | docker_process_sql; printf '\n' ;;
-			*.sql.gz)  printf '%s: running %s\n' "$0" "$f"; gunzip -c "$f" | docker_process_sql; printf '\n' ;;
-			*.sql.xz)  printf '%s: running %s\n' "$0" "$f"; xzcat "$f" | docker_process_sql; printf '\n' ;;
 			*)         printf '%s: ignoring %s\n' "$0" "$f" ;;
 		esac
 		printf '\n'
 	done
-}
-
-# Execute sql script, passed via stdin (or -f flag of pqsl)
-# usage: docker_process_sql [irissqlcli-args]
-#    ie: docker_process_sql --nspace=USER <<<'INSERT ...'
-#    ie: docker_process_sql -e 'select 1'
-#    ie: docker_process_sql < my-file.sql
-docker_process_sql() {
-	local query_runner=( /usr/irissys/bin/irispython -m irissqlcli )
-
-	"${query_runner[@]}" "$@"
-}
-
-# create initial database
-# uses environment variables for input: IRIS_NAMESPACE
-docker_setup_namespace() {
-	if ! docker_process_sql --nspace $IRIS_NAMESPACE -e 'SELECT $Namespace;' > /dev/null 2>&1; then
-		echo "Create namespace: $IRIS_NAMESPACE" 
-		docker_process_sql iris+emb:///%SYS <<-EOSQL > /dev/null
-			CREATE DATABASE "$IRIS_NAMESPACE";
-		EOSQL
-	fi
 }
 
 # Loads various settings that are used elsewhere in the script
@@ -208,8 +183,6 @@ _main() {
 			date > "$INSTALLDIR/iris.init"
 
 			docker_enable_callin
-
-			docker_setup_namespace
 
 			docker_setup_username
 

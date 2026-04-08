@@ -1,9 +1,9 @@
-iris-pex-embedded-python==3.5.6b10
+iris-pex-embedded-python
 iris-embedded-python-wrapper
 PyJWT
 requests
-irissqlcli
 iris-fhir-python-strategy @ git+https://github.com/grongierisc/iris-fhir-python-strategy@v0.2.0
 pytest
 deepdiff
 docker
+python-fhir-converter @ https://github.com/grongierisc/fhir-converter/releases/download/v0.5.2/python_fhir_converter-0.5.2-py3-none-any.whl
