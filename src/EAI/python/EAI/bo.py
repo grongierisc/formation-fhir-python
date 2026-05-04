@@ -4,12 +4,10 @@ from msg import FhirRequest, FhirResponse
 
 class FhirHttpOperation(BusinessOperation):
 
-    def on_init(self):
-        if not hasattr(self, 'url'):
-            self.url = 'https://webgatewayfhir/fhir/r5'
-        if not hasattr(self, 'credential'):
-            self.credential = 'SuperUser'
+    url = 'https://webgatewayfhir/fhir/r5'
+    credential = 'SuperUser'
 
+    def on_init(self):
         self.session = requests.Session()
         self.session.auth = self._get_credentials()
 

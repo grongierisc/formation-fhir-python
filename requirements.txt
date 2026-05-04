@@ -1,5 +1,5 @@
 iris-pex-embedded-python
-iris-embedded-python-wrapper
+iris-embedded-python-wrapper==0.5.15b5
 PyJWT
 requests
 iris-fhir-python-strategy @ git+https://github.com/grongierisc/iris-fhir-python-strategy@v0.2.0
