@@ -31,3 +31,4 @@ if command -v iop &> /dev/null; then
     echo "Running iop command to import additional configuration..."
     iop --init --namespace EAI
     iop --migrate /irisdev/app/src/EAI/python/EAI/settings.py
+fi
